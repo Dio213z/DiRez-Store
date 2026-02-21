@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiRez Store - 100% Amanah</title>
+  <!-- <script src="/_sdk/data_sdk.js"></script> -->
+  <!-- <script src="/_sdk/element_sdk.js"></script> -->
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=El+Messiri:wght@700;800&family=Cairo:wght@400;600;700;800&family=Playfair+Display:wght@700;800;900&family=Cormorant+Garamond:wght@600;700&family=Abril+Fatface&family=Prata&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body class="h-full">
+  <div class="wrapper">
+    <!-- HEADER -->
+    <header class="header">
+      <div class="header-container">
+        <div class="logo"><span class="logo-moon">🌙✨</span>DiRez Store</div>
+        
+        <div class="nav-wrapper">
+          <ul class="nav-menu" id="navMenu">
+            <li class="nav-item"><a href="#home"><span class="nav-icon">🏠</span>Home</a></li>
+            <li class="nav-item"><a href="#games"><span class="nav-icon">🎮</span>Games</a></li>
+            <li class="nav-item"><a href="#" id="nav-history"><span class="nav-icon">📋</span>History</a></li>
+            <li class="nav-item"><a href="#contact"><span class="nav-icon">📞</span>Contact</a></li>
+          </ul>
+
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Cari...">
+            <div class="search-dropdown" id="searchDropdown"></div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <div class="hero-moon">🌙✨</div>
+        <div class="hero-badge">🌙 Ramadan Mubarak 1447 H 🕌</div>
+        <h1 class="hero-title">DiRez Store</h1>
+        <p class="hero-subtitle">100% Amanah • Top Up Game Terpercaya</p>
+        <p class="hero-description">Website top up game terpercaya dengan sistem amanah 100%, menyediakan layanan top up Mobile Legends, Free Fire, PUBG, Roblox, Genshin Impact dan banyak game lainnya dengan proses instan dan harga terjangkau</p>
+      </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+      <!-- WELCOME SECTION -->
+      <section class="welcome-section">
+        <div class="welcome-content">
+          <div class="welcome-emoji">🌙 🕌 🎁</div>
+          <h2 class="welcome-title">Selamat Datang di DiRez Store</h2>
+          <p class="welcome-text">Nikmati pengalaman top up game yang mudah, aman, dan terpercaya dengan sistem 100% Amanah bersama kami di bulan Ramadan yang mulia</p>
+          <div class="welcome-doa">اللهم تقبل منا صيامنا وقيامنا ودعاءنا</div>
+          <p class="welcome-subtitle">Ya Allah, terimalah puasa, qiam, dan doa kami</p>
+          <div class="amanah-badge">✅ 100% Amanah • Terpercaya • Berkah</div>
+        </div>
+      </section>
+
+      <!-- RAMADAN EVENT SECTION -->
+      <section class="event-section">
+        <div class="event-card">
+          <div class="event-header">
+            <div class="event-badge">🌙 EVENT SPESIAL 🌙</div>
+            <div class="event-title">Ramadan Mubarak 1447 H</div>
+            <div class="event-subtitle">DiRez Store - 100% Amanah</div>
+          </div>
+          <div class="event-content">
+            <div class="event-icon-container">
+              <div class="event-main-icon">🎁</div>
+              <div class="event-floating-icons">
+                <span class="floating-icon">💎</span>
+                <span class="floating-icon">🎮</span>
+                <span class="floating-icon">✨</span>
+              </div>
+            </div>
+            <div class="event-description">
+              <p class="event-description-title">💰 Top Up & Dapatkan Kode Redeem!</p>
+              <p class="event-description-text">Setiap pembelian di bulan Ramadan, dapatkan kode redeem senilai pembelian Anda untuk pembelian berikutnya!</p>
+              
+              <div class="event-buttons-container">
+                <button class="event-button event-button-reset" id="btn-scroll-games">
+                  <span class="button-icon">🎁</span>
+                  <span class="button-text">Top Up Sekarang</span>
+                  <span class="button-arrow">→</span>
+                </button>
+                <button class="event-button event-button-reset" id="btn-web-event">
+                  <span class="button-icon">🎪</span>
+                  <span class="button-text">Web Event</span>
+                  <span class="button-arrow">→</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GAMES SECTION -->
+      <section id="games">
+        <h2 class="section-title">🎮 Pilih Game Favorit Anda</h2>
+        <p class="section-subtitle">100+ Game • Proses Instan • 100% Amanah</p>
+        <div class="games-grid" id="gamesGrid"></div>
+      </section>
+
+      <!-- PRICE SECTION -->
+      <section id="priceSection" class="price-section">
+        <h3 class="price-header" id="priceTitle">💎 Pilih Paket</h3>
+        <div class="price-grid" id="priceGrid"></div>
+      </section>
+
+      <!-- FORM SECTION -->
+      <section id="formSection" class="form-section">
+        <h3 class="form-title">📝 Formulir Pemesanan</h3>
+
+        <div class="order-summary">
+          <div class="summary-row">
+            <span>🎮 Game:</span>
+            <span id="summaryGame">-</span>
+          </div>
+          <div class="summary-row">
+            <span>💎 Paket:</span>
+            <span id="summaryPackage">-</span>
+          </div>
+          <div class="summary-row">
+            <span>💰 Total:</span>
+            <span id="summaryTotal">-</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">📊 Jumlah</label>
+          <div class="qty-control">
+            <button type="button" class="qty-btn" id="btn-qty-dec">−</button>
+            <div class="qty-display" id="qtyDisplay">1</div>
+            <button type="button" class="qty-btn" id="btn-qty-inc">+</button>
+          </div>
+        </div>
+
+        <form id="orderForm">
+          <div class="form-group">
+            <label class="form-label">🆔 ID Game</label>
+            <input type="text" class="form-input" id="gameId" placeholder="Contoh: 123456789" required>
+          </div>
+
+          <div class="form-group server-id-group" id="serverIdGroup">
+            <label class="form-label">🏰 ID Server</label>
+            <input type="text" class="form-input" id="serverId" placeholder="Contoh: 1234 atau 5678">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">👤 Nickname</label>
+            <input type="text" class="form-input" id="nickname" placeholder="Nama pemain Anda" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">📱 WhatsApp</label>
+            <input type="tel" class="form-input" id="whatsapp" placeholder="08123456789" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">📧 Email</label>
+            <input type="email" class="form-input" id="email" placeholder="email@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">💳 Metode Pembayaran</label>
+            <div class="payment-grid">
+              <button type="button" class="payment-option" data-method="gopay">🟢 GoPay</button>
+              <button type="button" class="payment-option" data-method="dana">🔵 Dana</button>
+              <button type="button" class="payment-option" data-method="ovo">🟣 OVO</button>
+              <button type="button" class="payment-option" data-method="qris">📱 QRIS</button>
+              <button type="button" class="payment-option" data-method="cash">💵 Cash</button>
+            </div>
+            <input type="hidden" id="paymentMethod" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary">🛍️ Pesan Sekarang</button>
+          <button type="button" class="btn btn-secondary" id="btn-cancel-order">Batal</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="contact">
+      <div class="footer-content">
+        <div class="footer-decorations">🌙✨</div>
+        <div class="footer-title">📞 Hubungi Admin Kami</div>
+        <button class="footer-button" id="btn-contact-admin">💬 Chat WhatsApp</button>
+        <div class="footer-doa">دعاء وصيام وقيام مقبول بإذن الله</div>
+        <div class="footer-text">
+          <p>Layanan <span class="footer-text-highlight">Cepat • Aman • Berkah • 100% Amanah</span> ✨</p>
+          <p class="footer-text-arabic">والسلام عليكم ورحمة الله وبركاته</p>
+          <p class="footer-owner-container">
+            <span class="footer-owner-text">
+              Owned by Dio Rezky Maulana ✨
+            </span>
+          </p>
+          <p class="footer-copyright">© 2024 DiRez Store. Semua Hak Dilindungi. 🌙</p>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- RECEIPT MODAL -->
+  <div class="modal receipt-modal" id="receiptModal">
+    <div class="modal-content">
+      <div class="receipt-header">
+        <span class="receipt-icon">✅</span>
+        <div class="receipt-title">Pesanan Berhasil!</div>
+      </div>
+
+      <div class="receipt-body">
+        <div class="receipt-order-num">
+          <div class="receipt-order-label">Nomor Pesanan</div>
+          <div class="receipt-order-value" id="modalOrderNum">-</div>
+        </div>
+
+        <div class="receipt-divider">📦 ◆ ◆</div>
+
+        <div class="receipt-row">
+          <div>
+            <div class="receipt-label">🎮 Game</div>
+            <div class="receipt-value" id="modalGame">-</div>
+          </div>
+          <div>
+            <div class="receipt-label">💎 Paket</div>
+            <div class="receipt-value" id="modalPackage">-</div>
+          </div>
+        </div>
+
+        <div class="receipt-row">
+          <div>
+            <div class="receipt-label">🆔 ID Game</div>
+            <div class="receipt-value" id="modalGameId">-</div>
+          </div>
+          <div>
+            <div class="receipt-label">👤 Nickname</div>
+            <div class="receipt-value" id="modalNickname">-</div>
+          </div>
+        </div>
+
+        <div class="receipt-row">
+          <div>
+            <div class="receipt-label">💳 Metode</div>
+            <div class="receipt-value" id="modalPayment">-</div>
+          </div>
+        </div>
+
+        <div class="receipt-code-section">
+          <div class="receipt-code-label">🎁 Kode Redeem Anda</div>
+          <div class="receipt-code-value" id="modalRedeemCode">-</div>
+          <div class="receipt-code-info">✨ Gunakan kode ini untuk pembelian berikutnya! ✨</div>
+        </div>
+
+        <div class="receipt-total">
+          <div class="receipt-total-label">Total Pembayaran</div>
+          <div class="receipt-total-amount" id="modalTotal">-</div>
+        </div>
+
+        <div class="receipt-message">
+          ✨ Pesanan akan diproses segera. Terima kasih telah berbelanja! ✨
+        </div>
+      </div>
+
+      <div class="receipt-footer">
+        <div class="receipt-actions">
+          <button class="btn btn-primary" id="btn-receipt-wa">💬 Kirim ke WhatsApp</button>
+          <button class="btn btn-primary btn-receipt-email" id="btn-receipt-email">📧 Kirim ke Email</button>
+          <button class="btn btn-secondary" id="btn-receipt-close">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY MODAL -->
+  <div class="modal" id="historyModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-title">📋 History Pesanan</div>
+      </div>
+      
+      <div id="historyFormSection">
+        <div class="form-group history-form-group">
+          <label class="form-label">📱 Nomor WhatsApp</label>
+          <input type="tel" class="form-input history-phone-input" id="historyPhoneInput" placeholder="08123456789">
+          <button class="btn btn-primary history-search-btn" id="btn-history-search">🔍 Cari Pesanan</button>
+        </div>
+      </div>
+
+      <div id="historyList" class="history-list"></div>
+
+      <div class="modal-actions history-actions">
+        <button class="btn btn-secondary" id="btn-history-reset">Cari Lagi</button>
+        <button class="btn btn-secondary" id="btn-history-close">Tutup</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/scripts.js"></script>
+</body>
+</html>
