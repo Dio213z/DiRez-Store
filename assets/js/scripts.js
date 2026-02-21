@@ -606,7 +606,7 @@ Rp${r.total.toLocaleString('id-ID')}
 
 🎁 KODE REDEEM ANDA
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${r.redeemCode}
+MINTA ADMIN
 
 Nilai Kode Redeem : Rp${r.total.toLocaleString('id-ID')}
 ✨ Gunakan untuk pembelian berikutnya! ✨
@@ -672,7 +672,7 @@ TOTAL BAYAR    : Rp${r.total.toLocaleString('id-ID')}
 
 🎁 KODE REDEEM ANDA
 ═════════════════════════════════════════════════════════
-${r.redeemCode}
+MINTA ADMIN
 
 Nilai Kode Redeem: Rp${r.total.toLocaleString('id-ID')}
 ✨ Gunakan untuk pembelian berikutnya! ✨
