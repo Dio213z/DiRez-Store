@@ -1,1 +1,1 @@
-# DiRez-Store
+# DirezzStore
