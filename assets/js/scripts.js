@@ -323,11 +323,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('searchInput').value = '';
         dropdown.classList.remove('active');
         if (game.id === 'redfinger') {
-          window.open('https://direzstore.my.id/redfinger', '_blank');
+          window.open('https://direzstorebydiorezz.my.canva.site/redfinger', '_blank');
         } else if (game.id === 'genshin') {
-          window.open('https://direzstore.my.id/genshin-impact', '_blank');
+          window.open('https://direzstorebydiorezz.my.canva.sitegenshin-impact', '_blank');
         } else if (game.id === 'telegram') {
-          window.open('https://direzstore.my.id/telestars', '_blank');
+          window.open('https://direzstorebydiorezz.my.canva.site/telestars', '_blank');
         } else if (game.id === 'roblox') {
           window.open('https://direz-store-robloxrobux.my.canva.site', '_blank');
         } else {
@@ -606,7 +606,7 @@ Rp${r.total.toLocaleString('id-ID')}
 
 🎁 KODE REDEEM ANDA
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${r.redeemCode}
+Minta admin
 
 Nilai Kode Redeem : Rp${r.total.toLocaleString('id-ID')}
 ✨ Gunakan untuk pembelian berikutnya! ✨
@@ -672,10 +672,7 @@ TOTAL BAYAR    : Rp${r.total.toLocaleString('id-ID')}
 
 🎁 KODE REDEEM ANDA
 ═════════════════════════════════════════════════════════
-${r.redeemCode}
-
-Nilai Kode Redeem: Rp${r.total.toLocaleString('id-ID')}
-✨ Gunakan untuk pembelian berikutnya! ✨
+MINTA ADMIN YA
 
 ════════════════════════════════════════════════════════════
 ✅ PESANAN DITERIMA & DIPROSES SEGERA ✅
@@ -688,7 +685,7 @@ Semoga bermanfaat dan barokah! ✨
 
 DiRez Store
 100% Amanah • Terpercaya • Berkah
-https://direzstorebydiorezz.my.canva.site
+https://direzstore.my.id
 WhatsApp Admin: https://wa.me/6285646335331
 
 دعاء وصيام وقيام مقبول بإذن الله
@@ -756,7 +753,6 @@ WhatsApp Admin: https://wa.me/6285646335331
           <div class="history-details">
             <div><strong>🎮 Game:</strong> ${order.game} - ${order.package}</div>
             <div><strong>💰 Total:</strong> ${order.price}</div>
-            <div><strong>🎁 Kode Redeem:</strong> ${order.redeem_code}</div>
             <div><strong>👤 Nama:</strong> ${order.nickname}</div>
             <div><strong>💳 Metode:</strong> ${order.payment_method.toUpperCase()}</div>
           </div>
