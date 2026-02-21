@@ -488,15 +488,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return `DRZ-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
   }
 
-  function generateRedeemCode() {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let code = 'RDMN-';
-    for (let i = 0; i < 12; i++) {
-      code += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return code;
-  }
-
   async function submitOrder(e) {
     e.preventDefault();
 
@@ -516,7 +507,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const email = document.getElementById('email').value;
 
     const orderNum = generateOrderNumber();
-    const redeemCode = generateRedeemCode();
     const total = currentOrder.price * currentOrder.quantity;
 
     const orderData = {
@@ -530,35 +520,33 @@ document.addEventListener('DOMContentLoaded', () => {
       whatsapp: whatsapp,
       email: email,
       payment_method: selectedPayment,
-      redeem_code: redeemCode,
-      status: 'pending',
+      status: 'menunggu pembayaran',
       order_date: new Date().toISOString()
     };
 
     if (window.dataSdk) {
       const result = await window.dataSdk.create(orderData);
       if (result.isOk) {
-        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email, redeemCode);
+        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email,);
         cancelOrder();
       }
     } else {
         // Fallback for when SDK is missing (for local testing)
-        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email, redeemCode);
+        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email,);
         cancelOrder();
     }
   }
 
-  function showReceipt(orderNum, game, pkg, nickname, total, payment, gameId, serverId, email, redeemCode) {
+  function showReceipt(orderNum, game, pkg, nickname, total, payment, gameId, serverId, email,) {
     document.getElementById('modalOrderNum').textContent = orderNum;
     document.getElementById('modalGame').textContent = game;
     document.getElementById('modalPackage').textContent = pkg;
     document.getElementById('modalGameId').textContent = gameId;
     document.getElementById('modalNickname').textContent = nickname;
     document.getElementById('modalPayment').textContent = payment.toUpperCase();
-    document.getElementById('modalTotal').textContent = `Rp${total.toLocaleString('id-ID')}`;
-    document.getElementById('modalRedeemCode').textContent = redeemCode;
+    document.getElementById('modalTotal').textContent = `Rp${total.toLocaleString('id-ID')}`
 
-    currentReceipt = { orderNum, game, pkg, nickname, total, payment, whatsapp: document.getElementById('whatsapp').value, email: email, gameId, serverId, redeemCode, quantity: currentOrder.quantity, price: currentOrder.price };
+    currentReceipt = { orderNum, game, pkg, nickname, total, payment, whatsapp: document.getElementById('whatsapp').value, email: email, gameId, serverId, quantity: currentOrder.quantity, price: currentOrder.price };
     document.getElementById('receiptModal').classList.add('show');
   }
 
