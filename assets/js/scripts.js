@@ -756,7 +756,6 @@ WhatsApp Admin: https://wa.me/6285646335331
           <div class="history-details">
             <div><strong>🎮 Game:</strong> ${order.game} - ${order.package}</div>
             <div><strong>💰 Total:</strong> ${order.price}</div>
-            <div><strong>🎁 Kode Redeem:</strong> ${order.redeem_code}</div>
             <div><strong>👤 Nama:</strong> ${order.nickname}</div>
             <div><strong>💳 Metode:</strong> ${order.payment_method.toUpperCase()}</div>
           </div>
