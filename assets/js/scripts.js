@@ -674,10 +674,7 @@ TOTAL BAYAR    : Rp${r.total.toLocaleString('id-ID')}
 ═════════════════════════════════════════════════════════
 MINTA ADMIN
 
-Nilai Kode Redeem: Rp${r.total.toLocaleString('id-ID')}
-✨ Gunakan untuk pembelian berikutnya! ✨
-
-════════════════════════════════════════════════════════════
+═══════════════════════════════════════════════
 ✅ PESANAN DITERIMA & DIPROSES SEGERA ✅
 ════════════════════════════════════════════════════════════
 
@@ -688,7 +685,7 @@ Semoga bermanfaat dan barokah! ✨
 
 DiRez Store
 100% Amanah • Terpercaya • Berkah
-https://direzstorebydiorezz.my.canva.site
+https://direzstore.my.id
 WhatsApp Admin: https://wa.me/6285646335331
 
 دعاء وصيام وقيام مقبول بإذن الله
