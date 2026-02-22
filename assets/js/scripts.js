@@ -18,8 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'pubg', name: 'PUBG Mobile', image: 'pubg-mobile.jpg', status: '🔫 Top Up Instan' },
     { id: 'roblox', name: 'Roblox', image: 'roblox.jpg', status: '🎮 Top Up Instan' },
     { id: 'genshin', name: 'Genshin Impact', image: 'genshin-impact.jpg', status: '✨ Top Up Instan' },
-    { id: 'telegram', name: 'Telegram Stars', image: 'telegram-stars.jpg', status: '⭐ Top Up Instan' },
-    { id: 'redfinger', name: 'Redfinger Voucher', image: 'redfinger-voucher.jpg', status: '🎟️ Top Up Instan' },
+    { id: 'telegram', name: 'TELEGRAM STARS', image: 'telegram-stars.jpg', status: '⭐ Top Up Instan' },
+    { id: 'redfinger', name: 'REDFINGER VOUCHER', image: 'redfinger-voucher.jpg', status: '🎟️ Top Up Instan' },
     { id: 'ewallet', name: 'Top Up E-Wallet', image: 'e-wallet.svg', status: '💳 Top Up Instan' }
   ];
 
@@ -273,11 +273,11 @@ document.addEventListener('DOMContentLoaded', () => {
       card.className = 'game-card';
 
       if (game.id === 'redfinger') {
-        card.addEventListener('click', () => window.open('https://direzstore.my.id/redfinger', '_blank'));
+        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/redfinger', '_blank'));
       } else if (game.id === 'genshin') {
-        card.addEventListener('click', () => window.open('https://direzstore.my.id/genshin-impact', '_blank'));
+        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/genshin', '_blank'));
       } else if (game.id === 'telegram') {
-        card.addEventListener('click', () => window.open('https://direzstore.my.id/telestars', '_blank'));
+        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/telestars', '_blank'));
       } else if (game.id === 'roblox') {
         card.addEventListener('click', () => window.open('https://direz-store-robloxrobux.my.canva.site', '_blank'));
       } else if (game.id === 'ewallet') {
@@ -326,11 +326,11 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('searchInput').value = '';
         dropdown.classList.remove('active');
         if (game.id === 'redfinger') {
-          window.open('https://direzstore.my.id/redfinger', '_blank');
+          window.open('https://direzstorebydiorezz.my.canva.site/redfinger', '_blank');
         } else if (game.id === 'genshin') {
-          window.open('https://direzstore.my.id/genshin-impact', '_blank');
+          window.open('https://direzstorebydiorezz.my.canva.site/genshin', '_blank');
         } else if (game.id === 'telegram') {
-          window.open('https://direzstore.my.id/telestars', '_blank');
+          window.open('https://direzstorebydiorezz.my.canva.site/telestars', '_blank');
         } else if (game.id === 'roblox') {
           window.open('https://direz-store-robloxrobux.my.canva.site', '_blank');
         } else if (game.id === 'ewallet') {
