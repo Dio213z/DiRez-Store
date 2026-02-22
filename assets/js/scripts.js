@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'genshin', name: 'Genshin Impact', image: 'genshin-impact.jpg', status: '✨ Top Up Instan' },
     { id: 'telegram', name: 'Telegram Stars', image: 'telegram-stars.jpg', status: '⭐ Top Up Instan' },
     { id: 'redfinger', name: 'Redfinger Voucher', image: 'redfinger-voucher.jpg', status: '🎟️ Top Up Instan' }
-    { id: 'ewallet', name: 'Top Up dan kirim ke semua E wallet tanpa KTP', image: 'ewallet.jpg', status: '💸 Top Up Saldo dengan Cash dan QRIS' }
   ];
 
   const prices = {
@@ -273,15 +272,13 @@ document.addEventListener('DOMContentLoaded', () => {
       card.className = 'game-card';
 
       if (game.id === 'redfinger') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/redfinger', '_blank'));
+        card.addEventListener('click', () => window.open('https://direzstore.my.id/redfinger', '_blank'));
       } else if (game.id === 'genshin') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/genshin-impact', '_blank'));
+        card.addEventListener('click', () => window.open('https://direzstore.my.id/genshin-impact', '_blank'));
       } else if (game.id === 'telegram') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/telestars', '_blank'));
+        card.addEventListener('click', () => window.open('https://direzstore.my.id/telestars', '_blank'));
       } else if (game.id === 'roblox') {
         card.addEventListener('click', () => window.open('https://direz-store-robloxrobux.my.canva.site', '_blank'));
-        } else if (game.id === 'ewallet') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/e-wallet', '_blank'));
       } else {
         card.addEventListener('click', () => showPrices(game.id, game.name));
       }
@@ -326,15 +323,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('searchInput').value = '';
         dropdown.classList.remove('active');
         if (game.id === 'redfinger') {
-          window.open('https://direzstorebydiorezz.my.canva.site/redfinger', '_blank');
+          window.open('https://direzstore.my.id/redfinger', '_blank');
         } else if (game.id === 'genshin') {
-          window.open('https://direzstorebydiorezz.my.canva.site/genshin-impact', '_blank');
+          window.open('https://direzstore.my.id/genshin-impact', '_blank');
         } else if (game.id === 'telegram') {
-          window.open('https://direzstorebydiorezz.my.canva.site/telestars', '_blank');
+          window.open('https://direzstore.my.id/telestars', '_blank');
         } else if (game.id === 'roblox') {
           window.open('https://direz-store-robloxrobux.my.canva.site', '_blank');
-        } else if (game.id === 'ewallet') {
-          window.open('https://direzstorebydiorezz.my.canva.site/e-wallet', '_blank');
         } else {
           showPrices(game.id, game.name);
         }
@@ -493,6 +488,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return `DRZ-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
   }
 
+  function generateRedeemCode() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = 'RDMN-';
+    for (let i = 0; i < 12; i++) {
+      code += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return code;
+  }
+
   async function submitOrder(e) {
     e.preventDefault();
 
@@ -512,6 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const email = document.getElementById('email').value;
 
     const orderNum = generateOrderNumber();
+    const redeemCode = generateRedeemCode();
     const total = currentOrder.price * currentOrder.quantity;
 
     const orderData = {
@@ -525,33 +530,35 @@ document.addEventListener('DOMContentLoaded', () => {
       whatsapp: whatsapp,
       email: email,
       payment_method: selectedPayment,
-      status: 'menunggu pembayaran',
+      redeem_code: redeemCode,
+      status: 'pending',
       order_date: new Date().toISOString()
     };
 
     if (window.dataSdk) {
       const result = await window.dataSdk.create(orderData);
       if (result.isOk) {
-        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email,);
+        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email, redeemCode);
         cancelOrder();
       }
     } else {
         // Fallback for when SDK is missing (for local testing)
-        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email,);
+        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email, redeemCode);
         cancelOrder();
     }
   }
 
-  function showReceipt(orderNum, game, pkg, nickname, total, payment, gameId, serverId, email,) {
+  function showReceipt(orderNum, game, pkg, nickname, total, payment, gameId, serverId, email, redeemCode) {
     document.getElementById('modalOrderNum').textContent = orderNum;
     document.getElementById('modalGame').textContent = game;
     document.getElementById('modalPackage').textContent = pkg;
     document.getElementById('modalGameId').textContent = gameId;
     document.getElementById('modalNickname').textContent = nickname;
     document.getElementById('modalPayment').textContent = payment.toUpperCase();
-    document.getElementById('modalTotal').textContent = `Rp${total.toLocaleString('id-ID')}`
+    document.getElementById('modalTotal').textContent = `Rp${total.toLocaleString('id-ID')}`;
+    document.getElementById('modalRedeemCode').textContent = redeemCode;
 
-    currentReceipt = { orderNum, game, pkg, nickname, total, payment, whatsapp: document.getElementById('whatsapp').value, email: email, gameId, serverId, quantity: currentOrder.quantity, price: currentOrder.price };
+    currentReceipt = { orderNum, game, pkg, nickname, total, payment, whatsapp: document.getElementById('whatsapp').value, email: email, gameId, serverId, redeemCode, quantity: currentOrder.quantity, price: currentOrder.price };
     document.getElementById('receiptModal').classList.add('show');
   }
 
@@ -599,7 +606,7 @@ Rp${r.total.toLocaleString('id-ID')}
 
 🎁 KODE REDEEM ANDA
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MINTA ADMIN
+${r.redeemCode}
 
 Nilai Kode Redeem : Rp${r.total.toLocaleString('id-ID')}
 ✨ Gunakan untuk pembelian berikutnya! ✨
@@ -665,9 +672,12 @@ TOTAL BAYAR    : Rp${r.total.toLocaleString('id-ID')}
 
 🎁 KODE REDEEM ANDA
 ═════════════════════════════════════════════════════════
-MINTA ADMIN
+${r.redeemCode}
 
-═══════════════════════════════════════════════
+Nilai Kode Redeem: Rp${r.total.toLocaleString('id-ID')}
+✨ Gunakan untuk pembelian berikutnya! ✨
+
+════════════════════════════════════════════════════════════
 ✅ PESANAN DITERIMA & DIPROSES SEGERA ✅
 ════════════════════════════════════════════════════════════
 
@@ -678,7 +688,7 @@ Semoga bermanfaat dan barokah! ✨
 
 DiRez Store
 100% Amanah • Terpercaya • Berkah
-https://direzstore.my.id
+https://direzstorebydiorezz.my.canva.site
 WhatsApp Admin: https://wa.me/6285646335331
 
 دعاء وصيام وقيام مقبول بإذن الله
@@ -746,6 +756,7 @@ WhatsApp Admin: https://wa.me/6285646335331
           <div class="history-details">
             <div><strong>🎮 Game:</strong> ${order.game} - ${order.package}</div>
             <div><strong>💰 Total:</strong> ${order.price}</div>
+            <div><strong>🎁 Kode Redeem:</strong> ${order.redeem_code}</div>
             <div><strong>👤 Nama:</strong> ${order.nickname}</div>
             <div><strong>💳 Metode:</strong> ${order.payment_method.toUpperCase()}</div>
           </div>
