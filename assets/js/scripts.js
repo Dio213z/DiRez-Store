@@ -270,7 +270,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function smoothScrollTo(elementId) {
     const element = document.getElementById(elementId);
-    if (element) {
+    const wrapper = document.querySelector('.wrapper');
+    const headerHeight = 110;
+
+    if (element && wrapper) {
+      // Robust offset calculation using getBoundingClientRect
+      // This works even if element.offsetTop is relative to a nested offsetParent
+      const rect = element.getBoundingClientRect();
+      const targetPos = wrapper.scrollTop + rect.top - headerHeight;
+
+      wrapper.scrollTo({
+        top: targetPos,
+        behavior: 'smooth'
+      });
+    } else if (element) {
       element.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
@@ -426,7 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         box.innerHTML = priceContent;
         if (!item.habis) {
-          box.addEventListener('click', (e) => selectPrice(item, e));
+          box._itemData = item;
         } else {
           box.style.cursor = 'not-allowed';
           box.style.opacity = '0.6';
@@ -443,9 +456,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 500);
   }
 
-  function selectPrice(item, event) {
+  function selectPrice(item, element) {
     document.querySelectorAll('.price-item:not([style*="opacity"])').forEach(el => el.classList.remove('selected', 'active'));
-    event.currentTarget.classList.add('selected', 'active');
+    if (element) element.classList.add('selected', 'active');
 
     currentOrder.package = item.package;
     currentOrder.price = item.price;
@@ -872,19 +885,21 @@ WhatsApp Admin: https://wa.me/6285646335331
   const btnHistoryClose = document.getElementById('btn-history-close');
   if (btnHistoryClose) btnHistoryClose.addEventListener('click', closeHistory);
 
-  // Global click event for package selection scroll
+  // Unified event delegation for package selection and auto-scroll
   document.addEventListener('click', (e) => {
-    // Detect package selection: either by class or by being a clickable item in priceGrid
-    const priceGrid = document.getElementById('priceGrid');
-    const packageItem = e.target.closest('.price-item') ||
-                       (priceGrid && priceGrid.contains(e.target) && e.target.closest('div') && !e.target.closest('div').style.gridColumn);
+    const priceItem = e.target.closest('.price-item');
+    if (!priceItem) return;
 
-    if (packageItem && !packageItem.style.opacity && !packageItem.innerText.includes('HABIS')) {
+    // Skip if it's out of stock
+    if (priceItem.style.opacity === '0.6' || priceItem.innerText.includes('HABIS')) return;
+
+    // Use stored item data for selection
+    if (priceItem._itemData) {
+      selectPrice(priceItem._itemData, priceItem);
+
+      // Auto scroll with 400ms delay
       setTimeout(() => {
-        const formPesanan = document.getElementById('form-pesanan');
-        if (formPesanan && formPesanan.classList.contains('active')) {
-          smoothScrollTo('form-pesanan');
-        }
+        smoothScrollTo('form-pesanan');
       }, 400);
     }
   });
