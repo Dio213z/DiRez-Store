@@ -429,8 +429,8 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function selectPrice(item, event) {
-    document.querySelectorAll('.price-item:not([style*="opacity"])').forEach(el => el.classList.remove('selected'));
-    event.currentTarget.classList.add('selected');
+    document.querySelectorAll('.price-item:not([style*="opacity"])').forEach(el => el.classList.remove('selected', 'active'));
+    event.currentTarget.classList.add('selected', 'active');
 
     currentOrder.package = item.package;
     currentOrder.price = item.price;
@@ -441,11 +441,11 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('summaryTotal').textContent = `Rp${item.price.toLocaleString('id-ID')}`;
     document.getElementById('qtyDisplay').textContent = '1';
 
-    const formSection = document.getElementById('formSection');
-    formSection.classList.add('active');
+    const formPesanan = document.getElementById('form-pesanan');
+    formPesanan.classList.add('active');
 
     setTimeout(() => {
-      formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      formPesanan.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }, 100);
   }
 
@@ -477,9 +477,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function cancelOrder() {
-    document.getElementById('formSection').classList.remove('active');
+    document.getElementById('form-pesanan').classList.remove('active');
     document.getElementById('priceSection').classList.remove('active');
-    document.querySelectorAll('.price-item').forEach(el => el.classList.remove('selected'));
+    document.querySelectorAll('.price-item').forEach(el => el.classList.remove('selected', 'active'));
     document.querySelectorAll('.payment-option').forEach(el => el.classList.remove('selected'));
     document.getElementById('gameId').value = '';
     document.getElementById('serverId').value = '';
@@ -509,7 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const errorDiv = document.createElement('div');
       errorDiv.style.cssText = 'background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: center; font-weight: 700; border: 1.5px solid rgba(239, 68, 68, 0.3);';
       errorDiv.textContent = '⚠️ Pilih metode pembayaran terlebih dahulu!';
-      document.getElementById('formSection').insertBefore(errorDiv, document.getElementById('formSection').firstChild);
+      document.getElementById('form-pesanan').insertBefore(errorDiv, document.getElementById('form-pesanan').firstChild);
       setTimeout(() => errorDiv.remove(), 3000);
       return;
     }

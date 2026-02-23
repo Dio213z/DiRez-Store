@@ -1074,11 +1074,12 @@
       opacity: 1;
     }
 
-    .price-item.selected {
+    .price-item.selected,
+    .price-item.active {
       background: linear-gradient(135deg, #d4af85 0%, #e6c9a8 100%);
       color: #0d3b2a;
-      border-color: #f5deb3;
-      box-shadow: 0 12px 35px rgba(212, 175, 133, 0.4);
+      border-color: #ffd700;
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 0 12px 35px rgba(212, 175, 133, 0.4);
       transform: scale(1.1);
     }
 
