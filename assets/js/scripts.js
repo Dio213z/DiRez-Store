@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (game.id === 'redfinger') {
         card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/redfinger', '_blank'));
       } else if (game.id === 'genshin') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/genshin', '_blank'));
+        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/genshin-impact', '_blank'));
       } else if (game.id === 'telegram') {
         card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/telestars', '_blank'));
       } else if (game.id === 'roblox') {
@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (game.id === 'redfinger') {
           window.open('https://direzstorebydiorezz.my.canva.site/redfinger', '_blank');
         } else if (game.id === 'genshin') {
-          window.open('https://direzstorebydiorezz.my.canva.site/genshin', '_blank');
+          window.open('https://direzstorebydiorezz.my.canva.site/genshin'-impact, '_blank');
         } else if (game.id === 'telegram') {
           window.open('https://direzstorebydiorezz.my.canva.site/telestars', '_blank');
         } else if (game.id === 'roblox') {
