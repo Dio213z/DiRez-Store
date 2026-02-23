@@ -58,7 +58,6 @@
       z-index: 1000;
       box-shadow: 0 8px 30px rgba(212, 175, 133, 0.15);
       border-bottom: 3px solid rgba(212, 175, 133, 0.3);
-      position: relative;
     }
 
     .header::after {
@@ -988,6 +987,7 @@
       box-shadow: 0 8px 25px rgba(212, 175, 133, 0.15);
       border-top: 5px solid #d4af85;
       position: relative;
+      scroll-margin-top: 110px;
     }
 
     .price-section::before {
@@ -1141,6 +1141,7 @@
       box-shadow: 0 8px 25px rgba(212, 175, 133, 0.15);
       border-top: 5px solid #d4af85;
       position: relative;
+      scroll-margin-top: 110px;
     }
 
     .form-section::before {
