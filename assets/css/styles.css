@@ -1695,44 +1695,6 @@
       gap: 1rem;
     }
 
-    .receipt-code-section {
-      background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(76, 175, 80, 0.08));
-      border: 2px solid #4caf50;
-      border-radius: 12px;
-      padding: 1.5rem;
-      margin-bottom: 1.5rem;
-      text-align: center;
-    }
-
-    .receipt-code-label {
-      font-size: 0.85rem;
-      color: #90ee90;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.2px;
-      margin-bottom: 0.6rem;
-      font-family: 'Cairo', sans-serif;
-    }
-
-    .receipt-code-value {
-      font-size: 1.6rem;
-      font-weight: 900;
-      background: linear-gradient(135deg, #90ee90 0%, #7fff7f 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-family: 'El Messiri', 'Cairo', sans-serif;
-      word-break: break-all;
-      letter-spacing: 1px;
-    }
-
-    .receipt-code-info {
-      font-size: 0.8rem;
-      color: #90ee90;
-      margin-top: 0.8rem;
-      font-weight: 700;
-      font-style: italic;
-    }
 
     .modal-header {
       text-align: center;
