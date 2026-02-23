@@ -268,6 +268,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function smoothScrollTo(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  }
+
   function renderGames() {
     const grid = document.getElementById('gamesGrid');
     if (!grid) return;
@@ -429,7 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
     priceSection.classList.add('active');
 
     setTimeout(() => {
-      priceSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      smoothScrollTo('priceSection');
     }, 500);
   }
 
@@ -450,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
     formPesanan.classList.add('active');
 
     setTimeout(() => {
-      formPesanan.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      smoothScrollTo('form-pesanan');
     }, 500);
   }
 
