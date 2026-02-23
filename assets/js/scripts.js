@@ -458,13 +458,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const formPesanan = document.getElementById('form-pesanan');
     formPesanan.classList.add('active');
-
-    // Perbaikan: Gunakan delay lebih lama untuk Free Fire agar scroll berjalan lancar
-    const scrollDelay = (currentOrder.game === 'ff') ? 1000 : 500;
-
-    setTimeout(() => {
-      smoothScrollTo('form-pesanan');
-    }, scrollDelay);
   }
 
   function increaseQty() {
@@ -878,6 +871,23 @@ WhatsApp Admin: https://wa.me/6285646335331
 
   const btnHistoryClose = document.getElementById('btn-history-close');
   if (btnHistoryClose) btnHistoryClose.addEventListener('click', closeHistory);
+
+  // Global click event for package selection scroll
+  document.addEventListener('click', (e) => {
+    // Detect package selection: either by class or by being a clickable item in priceGrid
+    const priceGrid = document.getElementById('priceGrid');
+    const packageItem = e.target.closest('.price-item') ||
+                       (priceGrid && priceGrid.contains(e.target) && e.target.closest('div') && !e.target.closest('div').style.gridColumn);
+
+    if (packageItem && !packageItem.style.opacity && !packageItem.innerText.includes('HABIS')) {
+      setTimeout(() => {
+        const formPesanan = document.getElementById('form-pesanan');
+        if (formPesanan && formPesanan.classList.contains('active')) {
+          smoothScrollTo('form-pesanan');
+        }
+      }, 400);
+    }
+  });
 
   // Initialize
   initSDK();
