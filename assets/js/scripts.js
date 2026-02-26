@@ -798,7 +798,7 @@ WhatsApp Admin: https://wa.me/6285646335331
   if (btnScrollGames) btnScrollGames.addEventListener('click', scrollToGames);
 
   const btnWebEvent = document.getElementById('btn-web-event');
-  if (btnWebEvent) btnWebEvent.addEventListener('click', () => window.open('https://direzstore.my.id/event', '_blank'));
+  if (btnWebEvent) btnWebEvent.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/event', '_blank'));
 
   // Quantity Buttons
   const btnQtyDec = document.getElementById('btn-qty-dec');
