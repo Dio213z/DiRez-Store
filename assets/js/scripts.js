@@ -814,7 +814,10 @@ WhatsApp Admin: https://wa.me/6285646335331
 
   async function adminLogin() {
     const password = document.getElementById('adminPassword').value;
-    if (!password) return;
+    if (!password) {
+      alert('Masukkan password!');
+      return;
+    }
 
     try {
       const response = await fetch('/api/admin/login', {
@@ -834,6 +837,7 @@ WhatsApp Admin: https://wa.me/6285646335331
       }
     } catch (err) {
       console.error('Login error:', err);
+      alert('Terjadi kesalahan saat login!');
     }
   }
 
@@ -1132,6 +1136,15 @@ WhatsApp Admin: https://wa.me/6285646335331
 
   const btnAdminLogout = document.getElementById('btn-admin-logout');
   if (btnAdminLogout) btnAdminLogout.addEventListener('click', adminLogout);
+
+  const adminPasswordInput = document.getElementById('adminPassword');
+  if (adminPasswordInput) {
+    adminPasswordInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        adminLogin();
+      }
+    });
+  }
 
   const orderStatusFilter = document.getElementById('orderStatusFilter');
   if (orderStatusFilter) orderStatusFilter.addEventListener('change', renderAdminOrders);
