@@ -464,8 +464,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('summaryGame').textContent = currentOrder.gameName;
     document.getElementById('summaryPackage').textContent = item.package;
-    document.getElementById('summaryTotal').textContent = `Rp${item.price.toLocaleString('id-ID')}`;
-    document.getElementById('qtyDisplay').textContent = '1';
+    updateTotal();
 
     const formPesanan = document.getElementById('form-pesanan');
     formPesanan.classList.add('active');
@@ -486,7 +485,16 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateTotal() {
-    const total = currentOrder.price * currentOrder.quantity;
+    let total = currentOrder.price * currentOrder.quantity;
+    const cashFeeLabel = document.getElementById('cashFeeLabel');
+
+    if (selectedPayment === 'cash') {
+      total += 1000;
+      if (cashFeeLabel) cashFeeLabel.style.display = 'inline';
+    } else {
+      if (cashFeeLabel) cashFeeLabel.style.display = 'none';
+    }
+
     document.getElementById('qtyDisplay').textContent = currentOrder.quantity;
     document.getElementById('summaryTotal').textContent = `Rp${total.toLocaleString('id-ID')}`;
   }
@@ -496,6 +504,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.classList.add('selected');
     selectedPayment = method;
     document.getElementById('paymentMethod').value = method;
+    updateTotal();
   }
 
   function cancelOrder() {
@@ -509,6 +518,8 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('whatsapp').value = '';
     document.getElementById('email').value = '';
     selectedPayment = '';
+    const cashFeeLabel = document.getElementById('cashFeeLabel');
+    if (cashFeeLabel) cashFeeLabel.style.display = 'none';
   }
 
   function generateOrderNumber() {
@@ -534,7 +545,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const email = document.getElementById('email').value;
 
     const orderNum = generateOrderNumber();
-    const total = currentOrder.price * currentOrder.quantity;
+    let total = currentOrder.price * currentOrder.quantity;
+    if (selectedPayment === 'cash') total += 1000;
 
     const orderData = {
       order_number: orderNum,
