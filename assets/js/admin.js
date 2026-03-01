@@ -47,11 +47,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function initAdmin() {
-    setupRealtimeOrders();
-    await loadSettings();
-    setupEventListeners();
-    document.getElementById('adminLoadingOverlay').style.display = 'none';
-    showNotification('Admin Dashboard siap.');
+    try {
+      setupRealtimeOrders();
+      await loadSettings();
+      setupEventListeners();
+      showNotification('Admin Dashboard siap.');
+    } catch (err) {
+      console.error('Initialization error:', err);
+      showNotification('Gagal memuat dashboard admin!', 'error');
+    } finally {
+      const overlay = document.getElementById('adminLoadingOverlay');
+      if (overlay) overlay.style.display = 'none';
+    }
   }
 
   function setupRealtimeOrders() {
@@ -60,22 +67,30 @@ document.addEventListener('DOMContentLoaded', () => {
       allOrders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       calculateAdminStats();
       renderAdminOrders();
+    }, (error) => {
+      console.error('Realtime orders error:', error);
+      showNotification('Gagal memuat pesanan terbaru!', 'error');
     });
   }
 
   async function loadSettings() {
-    const settingsDoc = await getDoc(doc(db, 'settings', 'product_data'));
-    if (settingsDoc.exists()) {
-      const data = settingsDoc.data();
-      if (data.prices) prices = data.prices;
-      if (data.games) {
-        data.games.forEach(savedGame => {
-          const index = games.findIndex(g => g.id === savedGame.id);
-          if (index !== -1) Object.assign(games[index], savedGame);
-        });
+    try {
+      const settingsDoc = await getDoc(doc(db, 'settings', 'product_data'));
+      if (settingsDoc.exists()) {
+        const data = settingsDoc.data();
+        if (data.prices) prices = data.prices;
+        if (data.games) {
+          data.games.forEach(savedGame => {
+            const index = games.findIndex(g => g.id === savedGame.id);
+            if (index !== -1) Object.assign(games[index], savedGame);
+          });
+        }
       }
+      renderAdminProducts();
+    } catch (err) {
+      console.error('Load settings error:', err);
+      showNotification('Gagal memuat pengaturan produk!', 'error');
     }
-    renderAdminProducts();
   }
 
   function calculateAdminStats() {
@@ -98,7 +113,12 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     allOrders.forEach(order => {
-      const price = parseInt(order.price.replace(/[^0-9]/g, '')) || 0;
+      let price = 0;
+      if (typeof order.price === 'string') {
+        price = parseInt(order.price.replace(/[^0-9]/g, '')) || 0;
+      } else if (typeof order.price === 'number') {
+        price = order.price;
+      }
       const modal = parseInt(order.modal) || 0;
       const profit = order.status === 'berhasil' ? (price - modal) : 0;
 
@@ -197,7 +217,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const orderSnap = await getDoc(doc(db, 'orders', id));
         if (orderSnap.exists()) {
           const order = orderSnap.data();
-          const price = parseInt(order.price.replace(/[^0-9]/g, '')) || 0;
+          let price = 0;
+          if (typeof order.price === 'string') {
+            price = parseInt(order.price.replace(/[^0-9]/g, '')) || 0;
+          } else if (typeof order.price === 'number') {
+            price = order.price;
+          }
           const modal = parseInt(order.modal) || 0;
           updateData.profit = price - modal;
         }
