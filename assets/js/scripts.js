@@ -813,8 +813,12 @@ WhatsApp Admin: https://wa.me/6285646335331
   }
 
   async function adminLogin() {
-    const password = document.getElementById('adminPassword').value;
-    if (!password) return;
+    const passwordInput = document.getElementById('adminPassword');
+    const password = passwordInput.value;
+    if (!password) {
+      alert('Masukkan password!');
+      return;
+    }
 
     try {
       const response = await fetch('/api/admin/login', {
@@ -823,17 +827,22 @@ WhatsApp Admin: https://wa.me/6285646335331
         body: JSON.stringify({ password })
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
       const data = await response.json();
       if (data.isOk) {
         localStorage.setItem('adminToken', data.token);
         document.getElementById('adminLoginModal').classList.remove('show');
-        document.getElementById('adminPassword').value = '';
+        passwordInput.value = '';
         showDashboard();
       } else {
         alert('Password salah!');
       }
     } catch (err) {
       console.error('Login error:', err);
+      alert('Gagal menghubungkan ke server. Silakan coba lagi.');
     }
   }
 
@@ -1124,6 +1133,13 @@ WhatsApp Admin: https://wa.me/6285646335331
   // Admin Listeners
   const btnAdminLogin = document.getElementById('btn-admin-login');
   if (btnAdminLogin) btnAdminLogin.addEventListener('click', adminLogin);
+
+  const adminPasswordInput = document.getElementById('adminPassword');
+  if (adminPasswordInput) {
+    adminPasswordInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') adminLogin();
+    });
+  }
 
   const btnAdminLoginClose = document.getElementById('btn-admin-login-close');
   if (btnAdminLoginClose) btnAdminLoginClose.addEventListener('click', () => {
