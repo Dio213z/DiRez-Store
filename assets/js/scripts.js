@@ -16,11 +16,11 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'ml', name: 'Mobile Legends', image: 'mobile-legend.jpg', status: '💎 Top Up Instan' },
     { id: 'ff', name: 'Free Fire', image: 'free-fire.jpg', status: '🔥 Top Up Instan' },
     { id: 'pubg', name: 'PUBG Mobile', image: 'pubg-mobile.jpg', status: '🔫 Top Up Instan' },
-    { id: 'roblox', name: 'Roblox', image: 'roblox.jpg', status: '🎮 Top Up Instan' },
-    { id: 'genshin', name: 'Genshin Impact', image: 'genshin-impact.jpg', status: '✨ Top Up Instan' },
-    { id: 'telegram', name: 'TELEGRAM STARS', image: 'telegram-stars.jpg', status: '⭐ Top Up Instan' },
-    { id: 'redfinger', name: 'REDFINGER VOUCHER', image: 'redfinger-voucher.jpg', status: '🎟️ Top Up Instan' },
-    { id: 'ewallet', name: 'Top Up E-Wallet', image: 'e-wallet.svg', status: '💳 Top Up Instan' }
+    { id: 'roblox', name: 'Roblox', image: 'roblox.jpg', status: '🎮 Top Up Instan', link: 'https://direz-store-robloxrobux.my.canva.site' },
+    { id: 'genshin', name: 'Genshin Impact', image: 'genshin-impact.jpg', status: '✨ Top Up Instan', link: 'https://direzstorebydiorezz.my.canva.site/genshin-impact' },
+    { id: 'telegram', name: 'TELEGRAM STARS', image: 'telegram-stars.jpg', status: '⭐ Top Up Instan', link: 'https://direzstorebydiorezz.my.canva.site/telestars' },
+    { id: 'redfinger', name: 'REDFINGER VOUCHER', image: 'redfinger-voucher.jpg', status: '🎟️ Top Up Instan', link: 'https://direzstorebydiorezz.my.canva.site/redfinger' },
+    { id: 'ewallet', name: 'Top Up E-Wallet', image: 'e-wallet.svg', status: '💳 Top Up Instan', link: 'https://direzstorebydiorezz.my.canva.site/e-wallet' }
   ];
 
   const prices = {
@@ -246,6 +246,24 @@ document.addEventListener('DOMContentLoaded', () => {
   async function initSDK() {
     if (window.dataSdk) {
       await window.dataSdk.init(dataHandler);
+
+      const productRes = await window.dataSdk.list('product_data');
+      if (productRes.isOk && productRes.data && productRes.data.length > 0) {
+        const savedPrices = productRes.data[0].prices;
+        if (savedPrices) {
+          Object.assign(prices, savedPrices);
+        }
+        const savedGames = productRes.data[0].games;
+        if (savedGames) {
+          // Update existing games with saved data
+          savedGames.forEach(savedGame => {
+            const index = games.findIndex(g => g.id === savedGame.id);
+            if (index !== -1) {
+              Object.assign(games[index], savedGame);
+            }
+          });
+        }
+      }
     }
     renderGames();
   }
@@ -298,16 +316,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const card = document.createElement('div');
       card.className = 'game-card';
 
-      if (game.id === 'redfinger') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/redfinger', '_blank'));
-      } else if (game.id === 'genshin') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/genshin-impact', '_blank'));
-      } else if (game.id === 'telegram') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/telestars', '_blank'));
-      } else if (game.id === 'roblox') {
-        card.addEventListener('click', () => window.open('https://direz-store-robloxrobux.my.canva.site', '_blank'));
-      } else if (game.id === 'ewallet') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/e-wallet', '_blank'));
+      if (game.link) {
+        card.addEventListener('click', () => window.open(game.link, '_blank'));
       } else {
         card.addEventListener('click', () => showPrices(game.id, game.name));
       }
@@ -351,16 +361,8 @@ document.addEventListener('DOMContentLoaded', () => {
       item.addEventListener('click', () => {
         document.getElementById('searchInput').value = '';
         dropdown.classList.remove('active');
-        if (game.id === 'redfinger') {
-          window.open('https://direzstorebydiorezz.my.canva.site/redfinger', '_blank');
-        } else if (game.id === 'genshin') {
-          window.open('https://direzstorebydiorezz.my.canva.site/genshin-impact', '_blank');
-        } else if (game.id === 'telegram') {
-          window.open('https://direzstorebydiorezz.my.canva.site/telestars', '_blank');
-        } else if (game.id === 'roblox') {
-          window.open('https://direz-store-robloxrobux.my.canva.site', '_blank');
-        } else if (game.id === 'ewallet') {
-          window.open('https://direzstorebydiorezz.my.canva.site/e-wallet', '_blank');
+        if (game.link) {
+          window.open(game.link, '_blank');
         } else {
           showPrices(game.id, game.name);
         }
@@ -559,7 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
       whatsapp: whatsapp,
       email: email,
       payment_method: selectedPayment,
-      status: 'pending',
+      status: 'proses',
       order_date: new Date().toISOString()
     };
 
@@ -791,11 +793,262 @@ WhatsApp Admin: https://wa.me/6285646335331
     document.getElementById('historyModal').classList.remove('show');
   }
 
+  // --- Admin Logic ---
+
+  let footerClicks = 0;
+  let footerTimer = null;
+
+  function handleFooterClick() {
+    footerClicks++;
+    if (footerTimer) clearTimeout(footerTimer);
+
+    if (footerClicks >= 10) {
+      footerClicks = 0;
+      document.getElementById('adminLoginModal').classList.add('show');
+    } else {
+      footerTimer = setTimeout(() => {
+        footerClicks = 0;
+      }, 3000);
+    }
+  }
+
+  async function adminLogin() {
+    const password = document.getElementById('adminPassword').value;
+    if (!password) return;
+
+    try {
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password })
+      });
+
+      const data = await response.json();
+      if (data.isOk) {
+        localStorage.setItem('adminToken', data.token);
+        document.getElementById('adminLoginModal').classList.remove('show');
+        document.getElementById('adminPassword').value = '';
+        showDashboard();
+      } else {
+        alert('Password salah!');
+      }
+    } catch (err) {
+      console.error('Login error:', err);
+    }
+  }
+
+  async function checkAdminSession() {
+    const token = localStorage.getItem('adminToken');
+    if (!token) return;
+
+    try {
+      const response = await fetch('/api/admin/verify', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await response.json();
+      if (data.isOk) {
+        showDashboard();
+      } else {
+        localStorage.removeItem('adminToken');
+      }
+    } catch (err) {
+      console.error('Verify error:', err);
+    }
+  }
+
+  function showDashboard() {
+    document.getElementById('adminDashboard').classList.add('active');
+    calculateAdminStats();
+    renderAdminOrders();
+    renderAdminProducts();
+  }
+
+  function adminLogout() {
+    localStorage.removeItem('adminToken');
+    document.getElementById('adminDashboard').classList.remove('active');
+  }
+
+  function calculateAdminStats() {
+    const stats = {
+      total: allOrders.length,
+      berhasil: 0,
+      proses: 0,
+      gagal: 0,
+      omzet: 0,
+      modal: 0,
+      products: {}
+    };
+
+    allOrders.forEach(order => {
+      if (order.status === 'berhasil') {
+        stats.berhasil++;
+        const price = parseInt(order.price.replace(/[^0-9]/g, '')) || 0;
+        const modal = parseInt(order.harga_modal) || 0;
+        stats.omzet += price;
+        stats.modal += modal;
+      } else if (order.status === 'proses') {
+        stats.proses++;
+      } else if (order.status === 'gagal') {
+        stats.gagal++;
+      }
+
+      const prodKey = `${order.game} - ${order.package}`;
+      stats.products[prodKey] = (stats.products[prodKey] || 0) + 1;
+    });
+
+    document.getElementById('stat-total-orders').textContent = stats.total;
+    document.getElementById('stat-berhasil').textContent = stats.berhasil;
+    document.getElementById('stat-proses').textContent = stats.proses;
+    document.getElementById('stat-gagal').textContent = stats.gagal;
+    document.getElementById('stat-omzet').textContent = `Rp${stats.omzet.toLocaleString('id-ID')}`;
+    document.getElementById('stat-modal').textContent = `Rp${stats.modal.toLocaleString('id-ID')}`;
+    document.getElementById('stat-untung').textContent = `Rp${(stats.omzet - stats.modal).toLocaleString('id-ID')}`;
+
+    let topProduct = '-';
+    let maxCount = 0;
+    for (const [prod, count] of Object.entries(stats.products)) {
+      if (count > maxCount) {
+        maxCount = count;
+        topProduct = prod;
+      }
+    }
+    document.getElementById('stat-top-product').textContent = topProduct;
+  }
+
+  function renderAdminOrders() {
+    const list = document.getElementById('adminOrderList');
+    if (!list) return;
+    const filter = document.getElementById('orderStatusFilter').value;
+
+    const filtered = allOrders.filter(o => filter === 'all' || o.status === filter);
+    list.innerHTML = '';
+
+    filtered.forEach(order => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${order.order_number}</td>
+        <td>${order.game}<br><small>${order.package}</small></td>
+        <td>${order.nickname}<br><small>${order.game_id} ${order.server_id ? `(${order.server_id})` : ''}</small></td>
+        <td>${order.price}</td>
+        <td>
+          <input type="number" class="price-input-sm" value="${order.harga_modal || 0}"
+            onchange="window._updateOrderField('${order.id}', 'harga_modal', this.value)">
+        </td>
+        <td>
+          <select class="status-badge status-${order.status}"
+            onchange="window._updateOrderField('${order.id}', 'status', this.value)">
+            <option value="proses" ${order.status === 'proses' ? 'selected' : ''}>PROSES</option>
+            <option value="berhasil" ${order.status === 'berhasil' ? 'selected' : ''}>BERHASIL</option>
+            <option value="gagal" ${order.status === 'gagal' ? 'selected' : ''}>GAGAL</option>
+          </select>
+        </td>
+      `;
+      list.appendChild(tr);
+    });
+  }
+
+  window._updateOrderField = async (id, field, value) => {
+    if (window.dataSdk) {
+      await window.dataSdk.update(id, { [field]: value });
+      // allOrders will be updated via dataHandler.onDataChanged
+      calculateAdminStats();
+      renderAdminOrders();
+    }
+  };
+
+  function renderAdminProducts() {
+    const list = document.getElementById('adminProductList');
+    const filter = document.getElementById('productGameFilter');
+    const gameSettings = document.getElementById('gameSettings');
+    if (!list || !filter || !gameSettings) return;
+
+    if (filter.options.length === 0) {
+      games.forEach(game => {
+        const opt = document.createElement('option');
+        opt.value = game.id;
+        opt.textContent = game.name;
+        filter.appendChild(opt);
+      });
+    }
+
+    const gameId = filter.value;
+    const gameData = games.find(g => g.id === gameId);
+
+    // Render Game Settings
+    gameSettings.innerHTML = `
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px; border: 1px solid #d4af85;">
+        <div>
+          <label style="color:#d4af85; display:block; margin-bottom:0.5rem; font-weight:700;">Nama Game</label>
+          <input type="text" class="form-input" value="${gameData.name}" onchange="window._updateGame('${gameId}', 'name', this.value)">
+        </div>
+        <div>
+          <label style="color:#d4af85; display:block; margin-bottom:0.5rem; font-weight:700;">Link Provider (Opsional)</label>
+          <input type="text" class="form-input" value="${gameData.link || ''}" placeholder="Kosongkan jika topup instan" onchange="window._updateGame('${gameId}', 'link', this.value)">
+        </div>
+      </div>
+    `;
+
+    list.innerHTML = '';
+    if (prices[gameId]) {
+      prices[gameId].forEach((item, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><input type="text" class="form-input" value="${item.package}" onchange="window._updateProduct('${gameId}', ${index}, 'package', this.value)"></td>
+          <td>${item.category}</td>
+          <td><input type="number" class="price-input-sm" value="${item.price}" onchange="window._updateProduct('${gameId}', ${index}, 'price', this.value)"></td>
+          <td>
+            <button class="btn btn-secondary btn-sm" onclick="window._updateProduct('${gameId}', ${index}, 'habis', ${!item.habis})">
+              ${item.habis ? 'STOK ADA' : 'HABIS'}
+            </button>
+          </td>
+        `;
+        list.appendChild(tr);
+      });
+    } else if (gameData.link) {
+      list.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem; color: #d4af85;">Produk ini menggunakan link eksternal.</td></tr>';
+    }
+  }
+
+  window._updateGame = async (gameId, field, value) => {
+    const gameIndex = games.findIndex(g => g.id === gameId);
+    if (gameIndex !== -1) {
+      games[gameIndex][field] = value;
+      if (window.dataSdk) {
+        const res = await window.dataSdk.list('product_data');
+        const saveData = { games: games.map(g => ({ id: g.id, name: g.name, link: g.link })) };
+        if (res.isOk && res.data && res.data.length > 0) {
+          await window.dataSdk.update(res.data[0].id, saveData);
+        } else {
+          await window.dataSdk.create({ type: 'product_data', ...saveData });
+        }
+      }
+      renderGames();
+      renderAdminProducts();
+    }
+  };
+
+  window._updateProduct = async (gameId, index, field, value) => {
+    if (field === 'price') value = parseInt(value) || 0;
+    prices[gameId][index][field] = value;
+    if (window.dataSdk) {
+      const res = await window.dataSdk.list('product_data');
+      if (res.isOk && res.data && res.data.length > 0) {
+        await window.dataSdk.update(res.data[0].id, { prices });
+      } else {
+        await window.dataSdk.create({ type: 'product_data', prices });
+      }
+    }
+    renderAdminProducts();
+  };
+
   // --- Attach Event Listeners ---
 
   // Header Logo
   const logo = document.querySelector('.logo');
   if (logo) logo.addEventListener('click', scrollToTop);
+
+  const footerOwner = document.getElementById('footer-owner');
+  if (footerOwner) footerOwner.addEventListener('click', handleFooterClick);
 
   // History Nav Link
   const historyLink = document.getElementById('nav-history');
@@ -868,6 +1121,33 @@ WhatsApp Admin: https://wa.me/6285646335331
   const btnHistoryClose = document.getElementById('btn-history-close');
   if (btnHistoryClose) btnHistoryClose.addEventListener('click', closeHistory);
 
+  // Admin Listeners
+  const btnAdminLogin = document.getElementById('btn-admin-login');
+  if (btnAdminLogin) btnAdminLogin.addEventListener('click', adminLogin);
+
+  const btnAdminLoginClose = document.getElementById('btn-admin-login-close');
+  if (btnAdminLoginClose) btnAdminLoginClose.addEventListener('click', () => {
+    document.getElementById('adminLoginModal').classList.remove('show');
+  });
+
+  const btnAdminLogout = document.getElementById('btn-admin-logout');
+  if (btnAdminLogout) btnAdminLogout.addEventListener('click', adminLogout);
+
+  const orderStatusFilter = document.getElementById('orderStatusFilter');
+  if (orderStatusFilter) orderStatusFilter.addEventListener('change', renderAdminOrders);
+
+  const productGameFilter = document.getElementById('productGameFilter');
+  if (productGameFilter) productGameFilter.addEventListener('change', renderAdminProducts);
+
+  document.querySelectorAll('.admin-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+    });
+  });
+
   // Unified event delegation for package selection and auto-scroll
   document.addEventListener('click', (e) => {
     const priceItem = e.target.closest('.price-item');
@@ -889,4 +1169,5 @@ WhatsApp Admin: https://wa.me/6285646335331
 
   // Initialize
   initSDK();
+  checkAdminSession();
 });
