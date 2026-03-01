@@ -449,7 +449,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc, onSnapshot, updateDoc, doc, serverTimestamp, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, updateDoc, doc, serverTimestamp, query, where, orderBy, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyALMYJlxx8mQzc_wqiy9o8U58ADjUwVa7U",
@@ -468,7 +468,7 @@
 
     window.auth = auth;
     window.db = db;
-    window.FirebaseFirestore = { collection, addDoc, onSnapshot, updateDoc, doc, serverTimestamp, query, where, orderBy };
+    window.FirebaseFirestore = { collection, addDoc, onSnapshot, updateDoc, doc, serverTimestamp, query, where, orderBy, getDoc };
     window.FirebaseAuth = { signInWithEmailAndPassword, onAuthStateChanged };
   </script>
   <script src="assets/js/scripts.js"></script>

@@ -478,41 +478,45 @@ document.addEventListener('DOMContentLoaded', () => {
     submitBtn.disabled = true;
     submitBtn.textContent = '⏳ Memproses...';
 
-    const gameId = document.getElementById('gameId').value;
-    const serverId = document.getElementById('serverId').value;
-    const nickname = document.getElementById('nickname').value;
-    const whatsapp = document.getElementById('whatsapp').value;
-    const email = document.getElementById('email').value;
-
-    const orderNum = `DRZ-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-    let total = currentOrder.price * currentOrder.quantity;
-    if (selectedPayment === 'cash') total += 1000;
-
-    const orderData = {
-      order_number: orderNum,
-      game: currentOrder.gameName,
-      package: currentOrder.package,
-      price: `Rp${total.toLocaleString('id-ID')}`,
-      game_id: gameId,
-      server_id: serverId,
-      nickname: nickname,
-      whatsapp: whatsapp,
-      email: email,
-      payment_method: selectedPayment,
-      status: 'proses',
-      modal: 0,
-      profit: 0,
-      order_date: new Date().toISOString(),
-      updatedAt: serverTimestamp()
-    };
-
     try {
+      const gameId = document.getElementById('gameId').value;
+      const serverId = document.getElementById('serverId').value;
+      const nickname = document.getElementById('nickname').value;
+      const whatsapp = document.getElementById('whatsapp').value;
+      const email = document.getElementById('email').value;
+
+      if (isNaN(currentOrder.price) || isNaN(currentOrder.quantity)) {
+        throw new Error('Invalid price or quantity data');
+      }
+
+      const orderNum = `DRZ-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+      let total = currentOrder.price * currentOrder.quantity;
+      if (selectedPayment === 'cash') total += 1000;
+
+      const orderData = {
+        order_number: orderNum,
+        game: currentOrder.gameName,
+        package: currentOrder.package,
+        price: `Rp${total.toLocaleString('id-ID')}`,
+        game_id: gameId,
+        server_id: serverId,
+        nickname: nickname,
+        whatsapp: whatsapp,
+        email: email,
+        payment_method: selectedPayment,
+        status: 'proses',
+        modal: 0,
+        profit: 0,
+        order_date: new Date().toISOString(),
+        updatedAt: serverTimestamp()
+      };
+
       await addDoc(collection(db, 'orders'), orderData);
       showNotification('Pesanan berhasil dibuat!');
       showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email);
       cancelOrder();
     } catch (err) {
-      console.error('Submit order error:', err);
+      console.error('Submit order error details:', err);
       showNotification('Gagal mengirim pesanan. Silakan coba lagi.', 'error');
     } finally {
       submitBtn.disabled = false;
