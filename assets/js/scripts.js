@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const { auth, db, FirebaseFirestore, FirebaseAuth } = window;
+  const { collection, addDoc, onSnapshot, query, where, orderBy, serverTimestamp, doc, getDoc } = FirebaseFirestore;
+  const { signInWithEmailAndPassword } = FirebaseAuth;
+
   let currentOrder = {
     game: '',
     gameName: '',
@@ -9,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let allOrders = [];
   let selectedPayment = '';
-  // Used for receipt modal sharing
   let currentReceipt = null;
 
   const games = [
@@ -237,33 +240,21 @@ document.addEventListener('DOMContentLoaded', () => {
     ]
   };
 
-  const dataHandler = {
-    onDataChanged(data) {
-      allOrders = data || [];
-    }
-  };
-
-  async function initSDK() {
-    if (window.dataSdk) {
-      await window.dataSdk.init(dataHandler);
-
-      const productRes = await window.dataSdk.list('product_data');
-      if (productRes.isOk && productRes.data && productRes.data.length > 0) {
-        const savedPrices = productRes.data[0].prices;
-        if (savedPrices) {
-          Object.assign(prices, savedPrices);
-        }
-        const savedGames = productRes.data[0].games;
-        if (savedGames) {
-          // Update existing games with saved data
-          savedGames.forEach(savedGame => {
+  async function initFirebaseData() {
+    try {
+      const settingsDoc = await getDoc(doc(db, 'settings', 'product_data'));
+      if (settingsDoc.exists()) {
+        const savedData = settingsDoc.data();
+        if (savedData.prices) Object.assign(prices, savedData.prices);
+        if (savedData.games) {
+          savedData.games.forEach(savedGame => {
             const index = games.findIndex(g => g.id === savedGame.id);
-            if (index !== -1) {
-              Object.assign(games[index], savedGame);
-            }
+            if (index !== -1) Object.assign(games[index], savedGame);
           });
         }
       }
+    } catch (err) {
+      console.error('Error loading settings:', err);
     }
     renderGames();
   }
@@ -290,20 +281,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const headerHeight = 110;
 
     if (element && wrapper) {
-      // Robust offset calculation using getBoundingClientRect
-      // This works even if element.offsetTop is relative to a nested offsetParent
       const rect = element.getBoundingClientRect();
       const targetPos = wrapper.scrollTop + rect.top - headerHeight;
-
-      wrapper.scrollTo({
-        top: targetPos,
-        behavior: 'smooth'
-      });
+      wrapper.scrollTo({ top: targetPos, behavior: 'smooth' });
     } else if (element) {
-      element.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start'
-      });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 
@@ -392,51 +374,28 @@ document.addEventListener('DOMContentLoaded', () => {
     priceGrid.innerHTML = '';
 
     const grouped = {};
-    prices[gameId].forEach((item) => {
-      if (!grouped[item.category]) {
-        grouped[item.category] = [];
-      }
-      grouped[item.category].push(item);
-    });
+    if (prices[gameId]) {
+      prices[gameId].forEach((item) => {
+        if (!grouped[item.category]) grouped[item.category] = [];
+        grouped[item.category].push(item);
+      });
+    }
 
     Object.entries(grouped).forEach(([category, items]) => {
       const categoryHeader = document.createElement('div');
-      categoryHeader.style.cssText = `
-        grid-column: 1 / -1;
-        font-size: 1.1rem;
-        font-weight: 900;
-        color: #ffed4e;
-        background: rgba(212, 175, 133, 0.1);
-        padding: 0.8rem 1.2rem;
-        border-radius: 10px;
-        border-left: 4px solid #d4af85;
-        margin-top: 1rem;
-        font-family: 'Cairo', sans-serif;
-        letter-spacing: 0.5px;
-        text-transform: uppercase;
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-      `;
+      categoryHeader.style.cssText = `grid-column: 1 / -1; font-size: 1.1rem; font-weight: 900; color: #ffed4e; background: rgba(212, 175, 133, 0.1); padding: 0.8rem 1.2rem; border-radius: 10px; border-left: 4px solid #d4af85; margin-top: 1rem; font-family: 'Cairo', sans-serif; letter-spacing: 0.5px; text-transform: uppercase; display: flex; align-items: center; gap: 0.8rem;`;
       categoryHeader.textContent = category;
       priceGrid.appendChild(categoryHeader);
 
       items.forEach((item) => {
         const box = document.createElement('div');
         box.className = 'price-item';
-
         let priceContent;
         if (item.habis) {
-          priceContent = `
-            <div class="price-habis">HABIS</div>
-          `;
+          priceContent = `<div class="price-habis">HABIS</div>`;
         } else {
-          priceContent = `
-            <div class="price-amount">${item.package}</div>
-            <div class="price-rupiah">Rp${item.price.toLocaleString('id-ID')}</div>
-          `;
+          priceContent = `<div class="price-amount">${item.package}</div><div class="price-rupiah">Rp${item.price.toLocaleString('id-ID')}</div>`;
         }
-
         box.innerHTML = priceContent;
         if (!item.habis) {
           box._itemData = item;
@@ -450,10 +409,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const priceSection = document.getElementById('priceSection');
     priceSection.classList.add('active');
-
-    setTimeout(() => {
-      smoothScrollTo('priceSection');
-    }, 500);
+    setTimeout(() => smoothScrollTo('priceSection'), 500);
   }
 
   function selectPrice(item, element) {
@@ -470,20 +426,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const formPesanan = document.getElementById('form-pesanan');
     formPesanan.classList.add('active');
-  }
-
-  function increaseQty() {
-    if (currentOrder.quantity < 10) {
-      currentOrder.quantity++;
-      updateTotal();
-    }
-  }
-
-  function decreaseQty() {
-    if (currentOrder.quantity > 1) {
-      currentOrder.quantity--;
-      updateTotal();
-    }
   }
 
   function updateTotal() {
@@ -524,21 +466,17 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cashFeeLabel) cashFeeLabel.style.display = 'none';
   }
 
-  function generateOrderNumber() {
-    return `DRZ-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-  }
-
   async function submitOrder(e) {
     e.preventDefault();
 
     if (!selectedPayment) {
-      const errorDiv = document.createElement('div');
-      errorDiv.style.cssText = 'background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 1rem; border-radius: 8px; margin-bottom: 1rem; text-align: center; font-weight: 700; border: 1.5px solid rgba(239, 68, 68, 0.3);';
-      errorDiv.textContent = '⚠️ Pilih metode pembayaran terlebih dahulu!';
-      document.getElementById('form-pesanan').insertBefore(errorDiv, document.getElementById('form-pesanan').firstChild);
-      setTimeout(() => errorDiv.remove(), 3000);
+      alert('Pilih metode pembayaran terlebih dahulu!');
       return;
     }
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ Memproses...';
 
     const gameId = document.getElementById('gameId').value;
     const serverId = document.getElementById('serverId').value;
@@ -546,7 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const whatsapp = document.getElementById('whatsapp').value;
     const email = document.getElementById('email').value;
 
-    const orderNum = generateOrderNumber();
+    const orderNum = `DRZ-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
     let total = currentOrder.price * currentOrder.quantity;
     if (selectedPayment === 'cash') total += 1000;
 
@@ -562,19 +500,23 @@ document.addEventListener('DOMContentLoaded', () => {
       email: email,
       payment_method: selectedPayment,
       status: 'proses',
-      order_date: new Date().toISOString()
+      modal: 0,
+      profit: 0,
+      order_date: new Date().toISOString(),
+      updatedAt: serverTimestamp()
     };
 
-    if (window.dataSdk) {
-      const result = await window.dataSdk.create(orderData);
-      if (result.isOk) {
-        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email);
-        cancelOrder();
-      }
-    } else {
-        // Fallback for when SDK is missing (for local testing)
-        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email);
-        cancelOrder();
+    try {
+      await addDoc(collection(db, 'orders'), orderData);
+      showNotification('Pesanan berhasil dibuat!');
+      showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email);
+      cancelOrder();
+    } catch (err) {
+      console.error('Submit order error:', err);
+      showNotification('Gagal mengirim pesanan. Silakan coba lagi.', 'error');
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '🛍️ Pesan Sekarang';
     }
   }
 
@@ -596,127 +538,19 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function sendToWhatsApp() {
-    const r = currentReceipt;
-    if (!r) return;
+    const r = currentReceipt; if (!r) return;
     const adminPhone = '6285646335331';
-    const dateStr = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-    const msg = `╔═════════════════════════════════╗
-║  ✅ PESANAN SUKSES - DIREZ STORE ✅  ║
-║      Ramadan Mubarak 1447 H          ║
-║        100% Amanah & Terpercaya      ║
-╚═══════════════════════════════════════╝
-
-📦 NOMOR PESANAN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${r.orderNum}
-
-👤 DATA PELANGGAN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Nama Pemain     : ${r.nickname}
-📱 WhatsApp     : ${r.whatsapp}
-📧 Email        : ${r.email}
-
-🎮 DETAIL PEMBELIAN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Game           : ${r.game}
-Paket          : ${r.pkg}
-Jumlah         : ${r.quantity}x
-Harga Satuan   : Rp${r.price.toLocaleString('id-ID')}
-🆔 ID Game     : ${r.gameId}
-${r.serverId ? `🏰 ID Server   : ${r.serverId}\n` : ''}
-💳 METODE PEMBAYARAN
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${r.payment.toUpperCase()}
-
-💰 TOTAL BAYAR
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Rp${r.total.toLocaleString('id-ID')}
-
-📅 TANGGAL & WAKTU
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-${dateStr}
-
-════════════════════════════════════════
-✅ PESANAN DITERIMA & DIPROSES SEGERA ✅
-════════════════════════════════════════
-
-📞 HUBUNGI ADMIN
-💬 Chat: https://wa.me/${adminPhone}
-🌐 Website: https://direzstorebydiorezz.my.canva.site
-
-Terimakasih telah berbelanja di DiRez Store!
-Semoga bermanfaat & barokah di bulan Ramadan ✨
-
-دعاء وصيام وقيام مقبول بإذن الله
-والسلام عليكم ورحمة الله وبركاته`;
-
+    const dateStr = new Date().toLocaleString('id-ID');
+    const msg = `✅ PESANAN BARU - DIREZ STORE\n━━━━━━━━━━━━━━━━━━━━\nNo: ${r.orderNum}\nGame: ${r.game}\nPaket: ${r.pkg}\nNickname: ${r.nickname}\nID: ${r.gameId} ${r.serverId ? `(${r.serverId})` : ''}\nTotal: Rp${r.total.toLocaleString('id-ID')}\nMetode: ${r.payment.toUpperCase()}\n━━━━━━━━━━━━━━━━━━━━\nTerima kasih!`;
     window.open(`https://wa.me/${adminPhone}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   function sendToEmail() {
-    const r = currentReceipt;
-    if (!r) return;
+    const r = currentReceipt; if (!r) return;
     const adminEmail = 'direzstudio@gmail.com';
-    const dateStr = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-
-    const emailBody = `════════════════════════════════════════════════════════════
-✅ STRUK PESANAN DIREZ STORE - 100% AMANAH ║
-══════════════════════════════════════════════════════════════════
-
-NOMOR PESANAN: ${r.orderNum}
-Tanggal & Waktu: ${dateStr}
-
-DATA PELANGGAN
-──────────────────────────────────────────────────────────
-Nama Pemain    : ${r.nickname}
-WhatsApp       : ${r.whatsapp}
-Email          : ${r.email}
-
-DETAIL PEMBELIAN
-──────────────────────────────────────────────────────────
-Game           : ${r.game}
-Paket          : ${r.pkg}
-Jumlah         : ${r.quantity}x
-Harga Satuan   : Rp${r.price.toLocaleString('id-ID')}
-ID Game        : ${r.gameId}
-${r.serverId ? `ID Server      : ${r.serverId}\n` : ''}
-METODE PEMBAYARAN
-──────────────────────────────────────────────────────────
-${r.payment.toUpperCase()}
-
-RINCIAN BIAYA
-──────────────────────────────────────────────────────────
-Subtotal       : Rp${r.price.toLocaleString('id-ID')} x ${r.quantity}
-─────────────────────────────────────────────────────────
-TOTAL BAYAR    : Rp${r.total.toLocaleString('id-ID')}
-═════════════════════════════════════════════════════════
-
-════════════════════════════════════════════════════════════
-✅ PESANAN DITERIMA & DIPROSES SEGERA ✅
-════════════════════════════════════════════════════════════
-
-Terimakasih telah mempercayai DiRez Store!
-Pesanan Anda akan diproses dalam waktu segera.
-
-Semoga bermanfaat dan barokah! ✨
-
-DiRez Store
-100% Amanah • Terpercaya • Berkah
-https://direzstorebydiorezz.my.canva.site
-WhatsApp Admin: https://wa.me/6285646335331
-
-دعاء وصيام وقيام مقبول بإذن الله
-والسلام عليكم ورحمة الله وبركاته`;
-
-    const subject = `📦 Struk Pesanan DiRez Store - ${r.orderNum}`;
-    const mailtoLink = `mailto:${adminEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(emailBody)}`;
-    window.location.href = mailtoLink;
-  }
-
-  function contactAdmin() {
-    const adminPhone = '6285646335331';
-    window.open(`https://wa.me/${adminPhone}`, '_blank');
+    const subject = `📦 Pesanan DiRez Store - ${r.orderNum}`;
+    const body = `Pesanan Baru:\nNo: ${r.orderNum}\nGame: ${r.game}\nPaket: ${r.pkg}\nNickname: ${r.nickname}\nID: ${r.gameId}\nTotal: Rp${r.total.toLocaleString('id-ID')}`;
+    window.location.href = `mailto:${adminEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
   function openHistory(e) {
@@ -727,460 +561,123 @@ WhatsApp Admin: https://wa.me/6285646335331
     document.getElementById('historyModal').classList.add('show');
   }
 
+  let historyUnsubscribe = null;
   function searchHistory() {
-    const searchPhone = document.getElementById('historyPhoneInput').value.trim();
+    const phone = document.getElementById('historyPhoneInput').value.trim();
+    if (!phone) { alert('Masukkan nomor WhatsApp!'); return; }
+
+    if (historyUnsubscribe) historyUnsubscribe();
+
     const list = document.getElementById('historyList');
-
-    if (!searchPhone) {
-      const errorDiv = document.createElement('div');
-      errorDiv.style.cssText = 'background: rgba(239, 68, 68, 0.2); color: #fca5a5; padding: 1rem; border-radius: 8px; text-align: center; font-weight: 700; border: 1.5px solid rgba(239, 68, 68, 0.3); margin-bottom: 1rem;';
-      errorDiv.textContent = '⚠️ Masukkan nomor WhatsApp terlebih dahulu!';
-      list.innerHTML = '';
-      list.appendChild(errorDiv);
-      list.style.display = 'block';
-      return;
-    }
-
-    const filteredOrders = allOrders.filter(order => order.whatsapp === searchPhone);
-    list.innerHTML = '';
-
-    if (filteredOrders.length === 0) {
-      const notFoundDiv = document.createElement('div');
-      notFoundDiv.style.cssText = `
-        background: linear-gradient(135deg, #1a5f47 0%, #0d3b2a 100%);
-        border: 3px solid #d4af85;
-        border-radius: 16px;
-        padding: 3rem 2rem;
-        text-align: center;
-        box-shadow: 0 8px 25px rgba(212, 175, 133, 0.15);
-      `;
-      notFoundDiv.innerHTML = `
-        <div style="font-size: 4rem; margin-bottom: 1.5rem;">❌</div>
-        <div style="font-size: 1.8rem; font-weight: 900; background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-family: 'Playfair Display', 'Abril Fatface', 'Cairo', sans-serif; margin-bottom: 1rem;">Pesanan Tidak Ditemukan</div>
-        <div style="color: #d4af85; font-size: 1rem; font-weight: 700; margin-bottom: 1.5rem;">Nomor WhatsApp: <span style="color: #f5deb3;">${searchPhone}</span></div>
-      `;
-      list.appendChild(notFoundDiv);
-    } else {
-      filteredOrders.forEach((order, index) => {
-        const item = document.createElement('div');
-        item.className = 'history-item';
-        item.innerHTML = `
-          <div class="history-order-num">
-            <span>📦</span>${order.order_number}
-          </div>
-          <div class="history-details">
-            <div><strong>🎮 Game:</strong> ${order.game} - ${order.package}</div>
-            <div><strong>💰 Total:</strong> ${order.price}</div>
-            <div><strong>👤 Nama:</strong> ${order.nickname}</div>
-            <div><strong>💳 Metode:</strong> ${order.payment_method.toUpperCase()}</div>
-          </div>
-        `;
-        list.appendChild(item);
-      });
-    }
-
+    list.innerHTML = '⏳ Mencari...';
+    list.style.display = 'block';
     document.getElementById('historyFormSection').style.display = 'none';
-    document.getElementById('historyList').style.display = 'block';
+
+    const q = query(collection(db, 'orders'), where('whatsapp', '==', phone), orderBy('updatedAt', 'desc'));
+    historyUnsubscribe = onSnapshot(q, (snapshot) => {
+      list.innerHTML = '';
+      if (snapshot.empty) {
+        list.innerHTML = '<div style="text-align:center; padding:2rem;">❌ Tidak ada pesanan.</div>';
+      } else {
+        snapshot.forEach(doc => {
+          const order = doc.data();
+          const item = document.createElement('div');
+          item.className = 'history-item';
+          item.innerHTML = `
+            <div class="history-order-num">📦 ${order.order_number}</div>
+            <div class="history-details">
+              <div><strong>🎮 ${order.game}</strong> - ${order.package}</div>
+              <div><strong>💰 ${order.price}</strong> | Status: <span class="status-badge status-${order.status}">${order.status.toUpperCase()}</span></div>
+            </div>`;
+          list.appendChild(item);
+        });
+      }
+    });
   }
 
-  function resetHistory() {
-    document.getElementById('historyPhoneInput').value = '';
-    document.getElementById('historyFormSection').style.display = 'block';
-    document.getElementById('historyList').style.display = 'none';
-  }
-
-  function closeHistory() {
-    document.getElementById('historyModal').classList.remove('show');
-  }
-
-  // --- Admin Logic ---
-
-  let footerClicks = 0;
-  let footerTimer = null;
-
-  function handleFooterClick() {
-    footerClicks++;
-    if (footerTimer) clearTimeout(footerTimer);
-
-    if (footerClicks >= 10) {
-      footerClicks = 0;
-      document.getElementById('adminLoginModal').classList.add('show');
-    } else {
-      footerTimer = setTimeout(() => {
-        footerClicks = 0;
-      }, 3000);
-    }
+  function showNotification(message, type = 'success') {
+    const container = document.getElementById('notification-container');
+    if (!container) return;
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      padding: 12px 24px;
+      border-radius: 8px;
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      animation: slideIn 0.3s ease-out;
+      background: ${type === 'success' ? '#10b981' : '#ef4444'};
+    `;
+    toast.textContent = message;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.animation = 'slideOut 0.3s ease-in forwards';
+      setTimeout(() => toast.remove(), 300);
+    }, 3000);
   }
 
   async function adminLogin() {
+    const email = document.getElementById('adminEmail').value;
     const password = document.getElementById('adminPassword').value;
-    if (!password) {
-      alert('Masukkan password!');
-      return;
-    }
+    if (!email || !password) { showNotification('Lengkapi email dan password!', 'error'); return; }
+
+    const loading = document.getElementById('adminLoginLoading');
+    loading.style.display = 'block';
 
     try {
-      const response = await fetch('/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password })
-      });
-
-      const data = await response.json();
-      if (data.isOk) {
-        localStorage.setItem('adminToken', data.token);
-        document.getElementById('adminLoginModal').classList.remove('show');
-        document.getElementById('adminPassword').value = '';
-        showDashboard();
-      } else {
-        alert('Password salah!');
-      }
+      await signInWithEmailAndPassword(auth, email, password);
+      showNotification('Login berhasil! Mengalihkan...');
+      setTimeout(() => window.location.href = 'admin.html', 1000);
     } catch (err) {
       console.error('Login error:', err);
-      alert('Terjadi kesalahan saat login!');
+      showNotification('Login gagal! Periksa email dan password.', 'error');
+    } finally {
+      loading.style.display = 'none';
     }
   }
 
-  async function checkAdminSession() {
-    const token = localStorage.getItem('adminToken');
-    if (!token) return;
-
-    try {
-      const response = await fetch('/api/admin/verify', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await response.json();
-      if (data.isOk) {
-        showDashboard();
-      } else {
-        localStorage.removeItem('adminToken');
-      }
-    } catch (err) {
-      console.error('Verify error:', err);
+  // Event Listeners
+  document.querySelector('.logo')?.addEventListener('click', scrollToTop);
+  document.getElementById('footer-owner')?.addEventListener('click', () => {
+    let clicks = window._footerClicks || 0;
+    clicks++;
+    window._footerClicks = clicks;
+    if (clicks >= 10) {
+      window._footerClicks = 0;
+      document.getElementById('adminLoginModal').classList.add('show');
     }
-  }
-
-  function showDashboard() {
-    document.getElementById('adminDashboard').classList.add('active');
-    calculateAdminStats();
-    renderAdminOrders();
-    renderAdminProducts();
-  }
-
-  function adminLogout() {
-    localStorage.removeItem('adminToken');
-    document.getElementById('adminDashboard').classList.remove('active');
-  }
-
-  function calculateAdminStats() {
-    const stats = {
-      total: allOrders.length,
-      berhasil: 0,
-      proses: 0,
-      gagal: 0,
-      omzet: 0,
-      modal: 0,
-      products: {}
-    };
-
-    allOrders.forEach(order => {
-      if (order.status === 'berhasil') {
-        stats.berhasil++;
-        const price = parseInt(order.price.replace(/[^0-9]/g, '')) || 0;
-        const modal = parseInt(order.harga_modal) || 0;
-        stats.omzet += price;
-        stats.modal += modal;
-      } else if (order.status === 'proses') {
-        stats.proses++;
-      } else if (order.status === 'gagal') {
-        stats.gagal++;
-      }
-
-      const prodKey = `${order.game} - ${order.package}`;
-      stats.products[prodKey] = (stats.products[prodKey] || 0) + 1;
-    });
-
-    document.getElementById('stat-total-orders').textContent = stats.total;
-    document.getElementById('stat-berhasil').textContent = stats.berhasil;
-    document.getElementById('stat-proses').textContent = stats.proses;
-    document.getElementById('stat-gagal').textContent = stats.gagal;
-    document.getElementById('stat-omzet').textContent = `Rp${stats.omzet.toLocaleString('id-ID')}`;
-    document.getElementById('stat-modal').textContent = `Rp${stats.modal.toLocaleString('id-ID')}`;
-    document.getElementById('stat-untung').textContent = `Rp${(stats.omzet - stats.modal).toLocaleString('id-ID')}`;
-
-    let topProduct = '-';
-    let maxCount = 0;
-    for (const [prod, count] of Object.entries(stats.products)) {
-      if (count > maxCount) {
-        maxCount = count;
-        topProduct = prod;
-      }
-    }
-    document.getElementById('stat-top-product').textContent = topProduct;
-  }
-
-  function renderAdminOrders() {
-    const list = document.getElementById('adminOrderList');
-    if (!list) return;
-    const filter = document.getElementById('orderStatusFilter').value;
-
-    const filtered = allOrders.filter(o => filter === 'all' || o.status === filter);
-    list.innerHTML = '';
-
-    filtered.forEach(order => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${order.order_number}</td>
-        <td>${order.game}<br><small>${order.package}</small></td>
-        <td>${order.nickname}<br><small>${order.game_id} ${order.server_id ? `(${order.server_id})` : ''}</small></td>
-        <td>${order.price}</td>
-        <td>
-          <input type="number" class="price-input-sm" value="${order.harga_modal || 0}"
-            onchange="window._updateOrderField('${order.id}', 'harga_modal', this.value)">
-        </td>
-        <td>
-          <select class="status-badge status-${order.status}"
-            onchange="window._updateOrderField('${order.id}', 'status', this.value)">
-            <option value="proses" ${order.status === 'proses' ? 'selected' : ''}>PROSES</option>
-            <option value="berhasil" ${order.status === 'berhasil' ? 'selected' : ''}>BERHASIL</option>
-            <option value="gagal" ${order.status === 'gagal' ? 'selected' : ''}>GAGAL</option>
-          </select>
-        </td>
-      `;
-      list.appendChild(tr);
-    });
-  }
-
-  window._updateOrderField = async (id, field, value) => {
-    if (window.dataSdk) {
-      await window.dataSdk.update(id, { [field]: value });
-      // allOrders will be updated via dataHandler.onDataChanged
-      calculateAdminStats();
-      renderAdminOrders();
-    }
-  };
-
-  function renderAdminProducts() {
-    const list = document.getElementById('adminProductList');
-    const filter = document.getElementById('productGameFilter');
-    const gameSettings = document.getElementById('gameSettings');
-    if (!list || !filter || !gameSettings) return;
-
-    if (filter.options.length === 0) {
-      games.forEach(game => {
-        const opt = document.createElement('option');
-        opt.value = game.id;
-        opt.textContent = game.name;
-        filter.appendChild(opt);
-      });
-    }
-
-    const gameId = filter.value;
-    const gameData = games.find(g => g.id === gameId);
-
-    // Render Game Settings
-    gameSettings.innerHTML = `
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 8px; border: 1px solid #d4af85;">
-        <div>
-          <label style="color:#d4af85; display:block; margin-bottom:0.5rem; font-weight:700;">Nama Game</label>
-          <input type="text" class="form-input" value="${gameData.name}" onchange="window._updateGame('${gameId}', 'name', this.value)">
-        </div>
-        <div>
-          <label style="color:#d4af85; display:block; margin-bottom:0.5rem; font-weight:700;">Link Provider (Opsional)</label>
-          <input type="text" class="form-input" value="${gameData.link || ''}" placeholder="Kosongkan jika topup instan" onchange="window._updateGame('${gameId}', 'link', this.value)">
-        </div>
-      </div>
-    `;
-
-    list.innerHTML = '';
-    if (prices[gameId]) {
-      prices[gameId].forEach((item, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td><input type="text" class="form-input" value="${item.package}" onchange="window._updateProduct('${gameId}', ${index}, 'package', this.value)"></td>
-          <td>${item.category}</td>
-          <td><input type="number" class="price-input-sm" value="${item.price}" onchange="window._updateProduct('${gameId}', ${index}, 'price', this.value)"></td>
-          <td>
-            <button class="btn btn-secondary btn-sm" onclick="window._updateProduct('${gameId}', ${index}, 'habis', ${!item.habis})">
-              ${item.habis ? 'STOK ADA' : 'HABIS'}
-            </button>
-          </td>
-        `;
-        list.appendChild(tr);
-      });
-    } else if (gameData.link) {
-      list.innerHTML = '<tr><td colspan="4" style="text-align:center; padding: 2rem; color: #d4af85;">Produk ini menggunakan link eksternal.</td></tr>';
-    }
-  }
-
-  window._updateGame = async (gameId, field, value) => {
-    const gameIndex = games.findIndex(g => g.id === gameId);
-    if (gameIndex !== -1) {
-      games[gameIndex][field] = value;
-      if (window.dataSdk) {
-        const res = await window.dataSdk.list('product_data');
-        const saveData = { games: games.map(g => ({ id: g.id, name: g.name, link: g.link })) };
-        if (res.isOk && res.data && res.data.length > 0) {
-          await window.dataSdk.update(res.data[0].id, saveData);
-        } else {
-          await window.dataSdk.create({ type: 'product_data', ...saveData });
-        }
-      }
-      renderGames();
-      renderAdminProducts();
-    }
-  };
-
-  window._updateProduct = async (gameId, index, field, value) => {
-    if (field === 'price') value = parseInt(value) || 0;
-    prices[gameId][index][field] = value;
-    if (window.dataSdk) {
-      const res = await window.dataSdk.list('product_data');
-      if (res.isOk && res.data && res.data.length > 0) {
-        await window.dataSdk.update(res.data[0].id, { prices });
-      } else {
-        await window.dataSdk.create({ type: 'product_data', prices });
-      }
-    }
-    renderAdminProducts();
-  };
-
-  // --- Attach Event Listeners ---
-
-  // Header Logo
-  const logo = document.querySelector('.logo');
-  if (logo) logo.addEventListener('click', scrollToTop);
-
-  const footerOwner = document.getElementById('footer-owner');
-  if (footerOwner) footerOwner.addEventListener('click', handleFooterClick);
-
-  // History Nav Link
-  const historyLink = document.getElementById('nav-history');
-  if (historyLink) historyLink.addEventListener('click', openHistory);
-
-  // Search Input
-  const searchInput = document.getElementById('searchInput');
-  if (searchInput) searchInput.addEventListener('keyup', searchGames);
-
-  // Event Buttons
-  const btnScrollGames = document.getElementById('btn-scroll-games');
-  if (btnScrollGames) btnScrollGames.addEventListener('click', scrollToGames);
-
-  const btnWebEvent = document.getElementById('btn-web-event');
-  if (btnWebEvent) btnWebEvent.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/event', '_blank'));
-
-  // Quantity Buttons
-  const btnQtyDec = document.getElementById('btn-qty-dec');
-  if (btnQtyDec) btnQtyDec.addEventListener('click', decreaseQty);
-
-  const btnQtyInc = document.getElementById('btn-qty-inc');
-  if (btnQtyInc) btnQtyInc.addEventListener('click', increaseQty);
-
-  // Payment Options
-  // Note: These are static in the original HTML but might be better dynamic or we loop.
-  // In the original, they are static HTML.
-  const paymentOptions = document.querySelectorAll('.payment-option');
-  paymentOptions.forEach(btn => {
-    // We need to know which method it corresponds to.
-    // The original passed 'gopay', 'dana', etc.
-    // I should add data-method attribute in HTML or infer from text.
-    // Best is to add data-method in HTML. I will assume I add it.
-    btn.addEventListener('click', (e) => {
-        // If data-method is missing, we can try to guess or just rely on the button having an attribute.
-        // I will add data-method to the HTML buttons.
-        const method = btn.getAttribute('data-method');
-        if (method) selectPayment(method, btn);
-    });
+    setTimeout(() => { window._footerClicks = 0; }, 3000);
   });
 
-  // Form Submit
-  const form = document.querySelector('form');
-  if (form) form.addEventListener('submit', submitOrder);
-
-  // Cancel Button
-  const btnCancel = document.getElementById('btn-cancel-order');
-  if (btnCancel) btnCancel.addEventListener('click', cancelOrder);
-
-  // Footer Contact
-  const btnContactAdmin = document.getElementById('btn-contact-admin');
-  if (btnContactAdmin) btnContactAdmin.addEventListener('click', contactAdmin);
-
-  // Receipt Modal Actions
-  const btnReceiptWa = document.getElementById('btn-receipt-wa');
-  if (btnReceiptWa) btnReceiptWa.addEventListener('click', sendToWhatsApp);
-
-  const btnReceiptEmail = document.getElementById('btn-receipt-email');
-  if (btnReceiptEmail) btnReceiptEmail.addEventListener('click', sendToEmail);
-
-  const btnReceiptClose = document.getElementById('btn-receipt-close');
-  if (btnReceiptClose) btnReceiptClose.addEventListener('click', closeReceipt);
-
-  // History Modal Actions
-  const btnHistorySearch = document.getElementById('btn-history-search');
-  if (btnHistorySearch) btnHistorySearch.addEventListener('click', searchHistory);
-
-  const btnHistoryReset = document.getElementById('btn-history-reset');
-  if (btnHistoryReset) btnHistoryReset.addEventListener('click', resetHistory);
-
-  const btnHistoryClose = document.getElementById('btn-history-close');
-  if (btnHistoryClose) btnHistoryClose.addEventListener('click', closeHistory);
-
-  // Admin Listeners
-  const btnAdminLogin = document.getElementById('btn-admin-login');
-  if (btnAdminLogin) btnAdminLogin.addEventListener('click', adminLogin);
-
-  const btnAdminLoginClose = document.getElementById('btn-admin-login-close');
-  if (btnAdminLoginClose) btnAdminLoginClose.addEventListener('click', () => {
-    document.getElementById('adminLoginModal').classList.remove('show');
+  document.getElementById('nav-history')?.addEventListener('click', openHistory);
+  document.getElementById('searchInput')?.addEventListener('keyup', searchGames);
+  document.getElementById('btn-scroll-games')?.addEventListener('click', scrollToGames);
+  document.getElementById('btn-qty-dec')?.addEventListener('click', () => { if(currentOrder.quantity > 1) { currentOrder.quantity--; updateTotal(); }});
+  document.getElementById('btn-qty-inc')?.addEventListener('click', () => { if(currentOrder.quantity < 10) { currentOrder.quantity++; updateTotal(); }});
+  document.querySelectorAll('.payment-option').forEach(btn => btn.addEventListener('click', () => selectPayment(btn.dataset.method, btn)));
+  document.getElementById('orderForm')?.addEventListener('submit', submitOrder);
+  document.getElementById('btn-cancel-order')?.addEventListener('click', cancelOrder);
+  document.getElementById('btn-receipt-wa')?.addEventListener('click', sendToWhatsApp);
+  document.getElementById('btn-receipt-email')?.addEventListener('click', sendToEmail);
+  document.getElementById('btn-receipt-close')?.addEventListener('click', closeReceipt);
+  document.getElementById('btn-history-search')?.addEventListener('click', searchHistory);
+  document.getElementById('btn-history-reset')?.addEventListener('click', () => {
+    document.getElementById('historyPhoneInput').value = '';
+    document.getElementById('historyFormSection').style.display = 'block';
+    document.getElementById('historyList').style.display = 'none';
   });
+  document.getElementById('btn-history-close')?.addEventListener('click', () => document.getElementById('historyModal').classList.remove('show'));
+  document.getElementById('btn-admin-login')?.addEventListener('click', adminLogin);
+  document.getElementById('btn-admin-login-close')?.addEventListener('click', () => document.getElementById('adminLoginModal').classList.remove('show'));
+  document.getElementById('adminPassword')?.addEventListener('keydown', (e) => { if(e.key === 'Enter') adminLogin(); });
 
-  const btnAdminLogout = document.getElementById('btn-admin-logout');
-  if (btnAdminLogout) btnAdminLogout.addEventListener('click', adminLogout);
-
-  const adminPasswordInput = document.getElementById('adminPassword');
-  if (adminPasswordInput) {
-    adminPasswordInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        adminLogin();
-      }
-    });
-  }
-
-  const orderStatusFilter = document.getElementById('orderStatusFilter');
-  if (orderStatusFilter) orderStatusFilter.addEventListener('change', renderAdminOrders);
-
-  const productGameFilter = document.getElementById('productGameFilter');
-  if (productGameFilter) productGameFilter.addEventListener('change', renderAdminProducts);
-
-  document.querySelectorAll('.admin-tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.remove('active'));
-      tab.classList.add('active');
-      document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
-    });
-  });
-
-  // Unified event delegation for package selection and auto-scroll
   document.addEventListener('click', (e) => {
     const priceItem = e.target.closest('.price-item');
-    if (!priceItem) return;
-
-    // Skip if it's out of stock
-    if (priceItem.style.opacity === '0.6' || priceItem.innerText.includes('HABIS')) return;
-
-    // Use stored item data for selection
-    if (priceItem._itemData) {
+    if (priceItem && !priceItem.classList.contains('price-habis') && priceItem._itemData) {
       selectPrice(priceItem._itemData, priceItem);
-
-      // Auto scroll with 400ms delay
-      setTimeout(() => {
-        smoothScrollTo('form-pesanan');
-      }, 400);
+      setTimeout(() => smoothScrollTo('form-pesanan'), 400);
     }
   });
 
-  // Initialize
-  initSDK();
-  checkAdminSession();
+  initFirebaseData();
 });

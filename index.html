@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body class="h-full">
+  <div id="notification-container" style="position: fixed; top: 20px; right: 20px; z-index: 20000; display: flex; flex-direction: column; gap: 10px;"></div>
   <div class="wrapper">
     <!-- HEADER -->
     <header class="header">
@@ -276,6 +277,13 @@
       <div class="modal-header">
         <div class="modal-title">🔐 Admin Login</div>
       </div>
+      <div id="adminLoginLoading" style="display: none; text-align: center; margin-bottom: 1rem; color: #ffd700;">
+        ⏳ Sedang memproses...
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Admin</label>
+        <input type="email" class="form-input" id="adminEmail" placeholder="email@example.com">
+      </div>
       <div class="form-group">
         <label class="form-label">Password Admin</label>
         <input type="password" class="form-input" id="adminPassword" placeholder="Masukkan password...">
@@ -287,111 +295,6 @@
     </div>
   </div>
 
-  <!-- ADMIN DASHBOARD -->
-  <div class="admin-dashboard" id="adminDashboard">
-    <div class="admin-container">
-      <div class="admin-header">
-        <h2 class="admin-title">🛠️ Admin Dashboard</h2>
-        <button class="btn btn-secondary btn-sm" id="btn-admin-logout">Logout</button>
-      </div>
-
-      <div class="admin-tabs">
-        <button class="admin-tab active" data-tab="stats">📊 Statistik</button>
-        <button class="admin-tab" data-tab="orders">📦 Pesanan</button>
-        <button class="admin-tab" data-tab="products">💎 Produk</button>
-      </div>
-
-      <!-- Stats Tab -->
-      <div class="admin-tab-content active" id="tab-stats">
-        <div class="stats-grid">
-          <div class="stat-card">
-            <div class="stat-label">Total Pesanan</div>
-            <div class="stat-value" id="stat-total-orders">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Berhasil</div>
-            <div class="stat-value text-success" id="stat-berhasil">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Proses</div>
-            <div class="stat-value text-warning" id="stat-proses">0</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Gagal</div>
-            <div class="stat-value text-danger" id="stat-gagal">0</div>
-          </div>
-        </div>
-
-        <div class="stats-grid financial-stats">
-          <div class="stat-card gold">
-            <div class="stat-label">Total Omzet</div>
-            <div class="stat-value" id="stat-omzet">Rp0</div>
-          </div>
-          <div class="stat-card gold">
-            <div class="stat-label">Total Modal</div>
-            <div class="stat-value" id="stat-modal">Rp0</div>
-          </div>
-          <div class="stat-card gold">
-            <div class="stat-label">Total Keuntungan</div>
-            <div class="stat-value" id="stat-untung">Rp0</div>
-          </div>
-        </div>
-
-        <div class="stat-card product-stat">
-          <div class="stat-label">Produk Terlaris</div>
-          <div class="stat-value" id="stat-top-product">-</div>
-        </div>
-      </div>
-
-      <!-- Orders Tab -->
-      <div class="admin-tab-content" id="tab-orders">
-        <div class="admin-filter">
-          <select class="form-input" id="orderStatusFilter">
-            <option value="all">Semua Status</option>
-            <option value="proses">Proses</option>
-            <option value="berhasil">Berhasil</option>
-            <option value="gagal">Gagal</option>
-          </select>
-        </div>
-        <div class="table-container">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>No. Pesanan</th>
-                <th>Produk</th>
-                <th>Data</th>
-                <th>Harga Jual</th>
-                <th>Harga Modal</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody id="adminOrderList"></tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Products Tab -->
-      <div class="admin-tab-content" id="tab-products">
-        <div class="admin-filter">
-          <select class="form-input" id="productGameFilter"></select>
-        </div>
-        <div id="gameSettings"></div>
-        <div class="table-container">
-          <table class="admin-table">
-            <thead>
-              <tr>
-                <th>Nama Paket</th>
-                <th>Kategori</th>
-                <th>Harga</th>
-                <th>Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="adminProductList"></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <div class="modal" id="historyModal">
     <div class="modal-content">
@@ -415,8 +318,6 @@
       </div>
     </div>
   </div>
-
-  <script src="assets/js/scripts.js"></script>
 
   <!-- BGM Player Section -->
   <style>
@@ -543,5 +444,33 @@
       });
     })();
   </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-analytics.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc, onSnapshot, updateDoc, doc, serverTimestamp, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyALMYJlxx8mQzc_wqiy9o8U58ADjUwVa7U",
+      authDomain: "direz-store.firebaseapp.com",
+      projectId: "direz-store",
+      storageBucket: "direz-store.firebasestorage.app",
+      messagingSenderId: "780736094080",
+      appId: "1:780736094080:web:865dc4dc501d9bf95eeb65",
+      measurementId: "G-SRWEGHHGYD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.auth = auth;
+    window.db = db;
+    window.FirebaseFirestore = { collection, addDoc, onSnapshot, updateDoc, doc, serverTimestamp, query, where, orderBy };
+    window.FirebaseAuth = { signInWithEmailAndPassword, onAuthStateChanged };
+  </script>
+  <script src="assets/js/scripts.js"></script>
 </body>
 </html>
