@@ -1769,16 +1769,22 @@
       letter-spacing: 0.1px;
     }
 
-    .status-pending {
+    .status-proses {
       background: rgba(255, 215, 0, 0.2);
       color: #ffed4e;
       border: 1px solid #ffed4e;
     }
 
-    .status-completed {
+    .status-berhasil {
       background: rgba(76, 175, 80, 0.2);
       color: #90ee90;
       border: 1px solid #90ee90;
+    }
+
+    .status-gagal {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
+      border: 1px solid #fca5a5;
     }
 
     /* RESPONSIVE */
