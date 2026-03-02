@@ -553,39 +553,74 @@ document.addEventListener('DOMContentLoaded', () => {
       game: currentOrder.gameName,
       package: currentOrder.package,
       price: `Rp${total.toLocaleString('id-ID')}`,
+      raw_price: currentOrder.price,
+      quantity: currentOrder.quantity,
+      total: total,
       game_id: gameId,
       server_id: serverId,
       nickname: nickname,
       whatsapp: whatsapp,
       email: email,
       payment_method: selectedPayment,
-      status: 'pending',
+      status: 'proses',
       order_date: new Date().toISOString()
     };
+
+    // Save locally for immediate history access
+    saveOrderLocally(orderData);
 
     if (window.dataSdk) {
       const result = await window.dataSdk.create(orderData);
       if (result.isOk) {
-        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email);
+        showReceipt(orderData);
         cancelOrder();
       }
     } else {
-        // Fallback for when SDK is missing (for local testing)
-        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email);
+        // Fallback for when SDK is missing
+        showReceipt(orderData);
         cancelOrder();
     }
   }
 
-  function showReceipt(orderNum, game, pkg, nickname, total, payment, gameId, serverId, email) {
-    document.getElementById('modalOrderNum').textContent = orderNum;
-    document.getElementById('modalGame').textContent = game;
-    document.getElementById('modalPackage').textContent = pkg;
-    document.getElementById('modalGameId').textContent = gameId;
-    document.getElementById('modalNickname').textContent = nickname;
-    document.getElementById('modalPayment').textContent = payment.toUpperCase();
-    document.getElementById('modalTotal').textContent = `Rp${total.toLocaleString('id-ID')}`;
+  function saveOrderLocally(order) {
+    let localHistory = JSON.parse(localStorage.getItem('direz_history') || '[]');
+    // Avoid duplicates if possible, though orderNum should be unique
+    if (!localHistory.find(o => o.order_number === order.order_number)) {
+      localHistory.push(order);
+      localStorage.setItem('direz_history', JSON.stringify(localHistory));
+    }
 
-    currentReceipt = { orderNum, game, pkg, nickname, total, payment, whatsapp: document.getElementById('whatsapp').value, email: email, gameId, serverId, quantity: currentOrder.quantity, price: currentOrder.price };
+    // Update global allOrders to include this new local order immediately
+    if (!allOrders.find(o => o.order_number === order.order_number)) {
+      allOrders.push(order);
+    }
+
+    localStorage.setItem('direz_last_whatsapp', order.whatsapp);
+  }
+
+  function showReceipt(order) {
+    document.getElementById('modalOrderNum').textContent = order.order_number;
+    document.getElementById('modalGame').textContent = order.game;
+    document.getElementById('modalPackage').textContent = order.package;
+    document.getElementById('modalGameId').textContent = order.game_id;
+    document.getElementById('modalNickname').textContent = order.nickname;
+    document.getElementById('modalPayment').textContent = order.payment_method.toUpperCase();
+    document.getElementById('modalTotal').textContent = order.price;
+
+    currentReceipt = {
+      orderNum: order.order_number,
+      game: order.game,
+      pkg: order.package,
+      nickname: order.nickname,
+      total: order.total || (typeof order.price === 'string' ? parseInt(order.price.replace(/[^0-9]/g, '')) : order.price),
+      payment: order.payment_method,
+      whatsapp: order.whatsapp,
+      email: order.email,
+      gameId: order.game_id,
+      serverId: order.server_id,
+      quantity: order.quantity || 1,
+      price: order.raw_price || 0
+    };
     document.getElementById('receiptModal').classList.add('show');
   }
 
@@ -719,10 +754,21 @@ WhatsApp Admin: https://wa.me/6285646335331
 
   function openHistory(e) {
     if (e) e.preventDefault();
-    document.getElementById('historyPhoneInput').value = '';
+
+    // Auto fill phone number if exists
+    const lastPhone = localStorage.getItem('direz_last_whatsapp') || document.getElementById('whatsapp').value;
+    const phoneInput = document.getElementById('historyPhoneInput');
+
     document.getElementById('historyFormSection').style.display = 'block';
     document.getElementById('historyList').style.display = 'none';
     document.getElementById('historyModal').classList.add('show');
+
+    if (lastPhone) {
+      phoneInput.value = lastPhone;
+      searchHistory();
+    } else {
+      phoneInput.value = '';
+    }
   }
 
   function searchHistory() {
@@ -739,7 +785,20 @@ WhatsApp Admin: https://wa.me/6285646335331
       return;
     }
 
-    const filteredOrders = allOrders.filter(order => order.whatsapp === searchPhone);
+    // Combine local history with SDK history
+    let localHistory = JSON.parse(localStorage.getItem('direz_history') || '[]');
+    let combinedOrders = [...allOrders];
+
+    localHistory.forEach(localOrder => {
+      if (!combinedOrders.find(o => o.order_number === localOrder.order_number)) {
+        combinedOrders.push(localOrder);
+      }
+    });
+
+    const filteredOrders = combinedOrders
+      .filter(order => order.whatsapp === searchPhone)
+      .sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
+
     list.innerHTML = '';
 
     if (filteredOrders.length === 0) {
@@ -759,20 +818,36 @@ WhatsApp Admin: https://wa.me/6285646335331
       `;
       list.appendChild(notFoundDiv);
     } else {
-      filteredOrders.forEach((order, index) => {
+      filteredOrders.forEach((order) => {
         const item = document.createElement('div');
         item.className = 'history-item';
+
+        const status = order.status || 'proses';
+        const date = new Date(order.order_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
         item.innerHTML = `
-          <div class="history-order-num">
-            <span>📦</span>${order.order_number}
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
+            <div class="history-order-num">
+              <span>📦</span>${order.order_number}
+            </div>
+            <span class="history-status status-${status}">${status}</span>
           </div>
           <div class="history-details">
             <div><strong>🎮 Game:</strong> ${order.game} - ${order.package}</div>
             <div><strong>💰 Total:</strong> ${order.price}</div>
             <div><strong>👤 Nama:</strong> ${order.nickname}</div>
-            <div><strong>💳 Metode:</strong> ${order.payment_method.toUpperCase()}</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; border-top: 1px solid rgba(212, 175, 133, 0.1); padding-top: 0.5rem;">
+               <span style="font-size: 0.75rem; opacity: 0.7;">📅 ${date}</span>
+               <span style="color: #ffd700; font-size: 0.8rem;">Lihat Detail ➔</span>
+            </div>
           </div>
         `;
+
+        item.addEventListener('click', () => {
+          showReceipt(order);
+          closeHistory();
+        });
+
         list.appendChild(item);
       });
     }
