@@ -7,8 +7,8 @@
     body {
       box-sizing: border-box;
       font-family: 'Cairo', 'Amiri', sans-serif;
-      background: linear-gradient(135deg, #050a14 0%, #0a1e3d 50%, #050a14 100%);
-      color: #f5deb3;
+      background: linear-gradient(135deg, #0d3b2a 0%, #1a5f47 50%, #0d3b2a 100%);
+      color: #e5ddd0;
     }
 
     html, body {
@@ -20,7 +20,7 @@
       width: 100%;
       height: 100%;
       overflow-y: auto;
-      background: linear-gradient(180deg, #050a14 0%, #0a1e3d 50%, #050a14 100%);
+      background: linear-gradient(180deg, #0d3b2a 0%, #1a5f47 50%, #0d3b2a 100%);
       position: relative;
     }
 
@@ -32,8 +32,9 @@
       right: 0;
       bottom: 0;
       background-image:
-        radial-gradient(circle at 50% 50%, rgba(212, 175, 133, 0.05) 0%, transparent 80%),
-        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0l2.5 7.5L40 10l-7.5 2.5L30 20l-2.5-7.5L20 10l7.5-2.5L30 0zm0 40l2.5 7.5L40 50l-7.5 2.5L30 60l-2.5-7.5L20 50l7.5-2.5L30 40zm20-20l2.5 7.5L60 30l-7.5 2.5L50 40l-2.5-7.5L40 30l7.5-2.5L50 20zM10 20l2.5 7.5L20 30l-7.5 2.5L10 40l-2.5-7.5L0 30l7.5-2.5L10 20z' fill='%23d4af85' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+        repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(212, 175, 133, 0.05) 40px, rgba(212, 175, 133, 0.05) 80px),
+        repeating-linear-gradient(-45deg, transparent, transparent 40px, rgba(212, 175, 133, 0.05) 40px, rgba(212, 175, 133, 0.05) 80px),
+        repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(212, 175, 133, 0.04) 60px, rgba(212, 175, 133, 0.04) 120px);
       pointer-events: none;
       z-index: 0;
     }
@@ -49,7 +50,7 @@
       top: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(135deg, #050a14 0%, #0a1e3d 50%, #050a14 100%);
+      background: linear-gradient(135deg, #0d3b2a 0%, #1a5f47 50%, #0d3b2a 100%);
       padding: 1rem 2rem;
       display: flex;
       justify-content: center;
@@ -57,6 +58,7 @@
       z-index: 1000;
       box-shadow: 0 8px 30px rgba(212, 175, 133, 0.15);
       border-bottom: 3px solid rgba(212, 175, 133, 0.3);
+      position: relative;
     }
 
     .header::after {
@@ -88,7 +90,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      font-family: 'El Messiri', 'Amiri', 'Cairo', sans-serif;
+      font-family: 'Abril Fatface', 'El Messiri', 'Cairo', sans-serif;
       letter-spacing: 0.5px;
       display: flex;
       align-items: center;
@@ -248,7 +250,7 @@
       top: 100%;
       left: 0;
       right: 0;
-      background: linear-gradient(135deg, #0a1e3d 0%, #050a14 100%);
+      background: linear-gradient(135deg, #1a5f47 0%, #0d3b2a 100%);
       border: 2px solid #d4af85;
       border-radius: 10px;
       border-top: none;
@@ -308,8 +310,8 @@
       margin-top: 70px;
       padding: 5rem 2rem;
       text-align: center;
-      background: linear-gradient(135deg, #050a14 0%, #0a1e3d 50%, #050a14 100%);
-      color: #f5deb3;
+      background: linear-gradient(135deg, #0d3b2a 0%, #1a5f47 50%, #0d3b2a 100%);
+      color: #e5ddd0;
       position: relative;
       overflow: hidden;
       border-bottom: 3px solid rgba(212, 175, 133, 0.2);
@@ -342,75 +344,6 @@
     .hero-content {
       position: relative;
       z-index: 2;
-    }
-
-    .hero-ketupat-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .ketupat {
-      position: absolute;
-      width: 40px;
-      height: 40px;
-      background: #d4af37;
-      transform: rotate(45deg);
-      box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
-      background-image:
-        repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(5, 10, 20, 0.1) 5px, rgba(5, 10, 20, 0.1) 10px),
-        repeating-linear-gradient(-45deg, transparent, transparent 5px, rgba(5, 10, 20, 0.1) 5px, rgba(5, 10, 20, 0.1) 10px);
-    }
-
-    .ketupat::after {
-      content: "";
-      position: absolute;
-      bottom: -20px;
-      left: 50%;
-      width: 2px;
-      height: 40px;
-      background: rgba(212, 175, 133, 0.3);
-      transform: rotate(-45deg);
-      transform-origin: top;
-    }
-
-    .ketupat:nth-child(1) {
-      top: 10%;
-      left: 10%;
-      animation: lantern-swing 3s infinite ease-in-out;
-    }
-
-    .ketupat:nth-child(2) {
-      top: 15%;
-      right: 10%;
-      animation: lantern-swing 4s infinite ease-in-out;
-      background: #f5deb3;
-    }
-
-    @keyframes lantern-swing {
-      0%, 100% { transform: rotate(45deg) translateY(0); }
-      50% { transform: rotate(48deg) translateY(5px); }
-    }
-
-    .hero-camel {
-      width: 150px;
-      height: 150px;
-      margin: 0 auto 1.5rem;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cpath fill='%23d4af85' d='M496 240c-11.8 0-22.3 6.4-28 16H368c-17.7 0-32 14.3-32 32v16c0 8.8-7.2 16-16 16s-16-7.2-16-16v-16c0-44.2-35.8-80-80-80h-16c-11.8 0-22.3-6.4-28-16-5.7-9.6-16.2-16-28-16h-32c-17.7 0-32 14.3-32 32v16c0 8.8-7.2 16-16 16s-16-7.2-16-16v-16c0-17.7-14.3-32-32-32H16c-8.8 0-16 7.2-16 16s7.2 16 16 16h8c8.8 0 16 7.2 16 16v128c0 35.3 28.7 64 64 64h16c8.8 0 16-7.2 16-16s-7.2-16-16-16H80c-17.7 0-32-14.3-32-32V288c0-8.8 7.2-16 16-16s16 7.2 16 16v16c0 17.7 14.3 32 32 32h32c11.8 0 22.3 6.4 28 16 5.7 9.6 16.2 16 28 16h16c44.2 0 80-35.8 80-80v-16c0-8.8 7.2-16 16-16s16 7.2 16 16v16c0 17.7 14.3 32 32 32h64c17.7 0 32 14.3 32 32v96c0 17.7-14.3 32-32 32h-16c-8.8 0-16 7.2-16 16s7.2 16 16 16h16c35.3 0 64-28.7 64-64V288c0-11.8-6.4-22.3-16-28-9.6-5.7-16-16.2-16-28v-8c0-8.8 7.2-16 16-16s16 7.2 16 16v8zm-336 8c0 8.8-7.2 16-16 16s-16-7.2-16-16 7.2-16 16-16 16 7.2 16 16z'/%3E%3C/svg%3E");
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      filter: drop-shadow(0 0 20px rgba(212, 175, 133, 0.4));
-      animation: camelWalk 5s ease-in-out infinite;
-    }
-
-    @keyframes camelWalk {
-      0%, 100% { transform: translateX(-10px) rotate(-2deg); }
-      50% { transform: translateX(10px) rotate(2deg); }
     }
 
     .hero-moon {
@@ -449,7 +382,7 @@
     .hero-title {
       font-size: 5.5rem;
       font-weight: 900;
-      font-family: 'El Messiri', 'Amiri', 'Cairo', sans-serif;
+      font-family: 'Playfair Display', 'Abril Fatface', 'El Messiri', 'Cairo', sans-serif;
       margin-bottom: 0.5rem;
       letter-spacing: -1px;
       background: linear-gradient(135deg, #ffd700 0%, #ffed4e 50%, #fff44f 100%);
@@ -517,22 +450,15 @@
     }
 
     .welcome-section::before {
-      content: '🕌';
+      content: '';
       position: absolute;
-      top: 10px;
-      right: 20px;
-      font-size: 3rem;
-      opacity: 0.2;
-    }
-
-    .welcome-section::after {
-      content: '🕌';
-      position: absolute;
-      bottom: 10px;
-      left: 20px;
-      font-size: 3rem;
-      opacity: 0.2;
-      transform: scaleX(-1);
+      top: -50%;
+      right: -10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(212, 175, 133, 0.1) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
     }
 
     .welcome-content {
@@ -553,7 +479,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      font-family: 'El Messiri', 'Amiri', 'Cairo', sans-serif;
+      font-family: 'Playfair Display', 'Abril Fatface', 'El Messiri', 'Cairo', sans-serif;
       margin-bottom: 1rem;
       letter-spacing: -0.5px;
     }
@@ -582,9 +508,9 @@
     /* AMANAH BADGE */
     .amanah-badge {
       display: inline-block;
-      background: linear-gradient(135deg, rgba(212, 175, 133, 0.2), rgba(212, 175, 133, 0.1));
-      border: 3px solid #d4af85;
-      color: #ffd700;
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(76, 175, 80, 0.1));
+      border: 3px solid #4caf50;
+      color: #90ee90;
       padding: 1.2rem 2.5rem;
       border-radius: 16px;
       font-size: 1.3rem;
@@ -594,16 +520,16 @@
       letter-spacing: 1px;
       text-transform: uppercase;
       animation: amanahPulse 2s ease-in-out infinite;
-      box-shadow: 0 0 30px rgba(212, 175, 133, 0.3);
+      box-shadow: 0 0 30px rgba(76, 175, 80, 0.3);
     }
 
     @keyframes amanahPulse {
       0%, 100% {
-        box-shadow: 0 0 20px rgba(212, 175, 133, 0.3);
+        box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
         transform: scale(1);
       }
       50% {
-        box-shadow: 0 0 40px rgba(212, 175, 133, 0.6);
+        box-shadow: 0 0 40px rgba(76, 175, 80, 0.6);
         transform: scale(1.02);
       }
     }
@@ -615,7 +541,7 @@
     }
 
     .event-card {
-      background: linear-gradient(135deg, #0a1e3d 0%, #050a14 50%, #0a1e3d 100%);
+      background: linear-gradient(135deg, #1a5f47 0%, #0d3b2a 50%, #1a5f47 100%);
       border: 3px solid #d4af85;
       border-radius: 20px;
       padding: 2.5rem;
@@ -716,7 +642,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      font-family: 'El Messiri', 'Amiri', 'Cairo', sans-serif;
+      font-family: 'Playfair Display', 'Abril Fatface', 'Cairo', sans-serif;
       margin-bottom: 0.5rem;
       letter-spacing: -0.5px;
       animation: titleShine 3s ease-in-out infinite;
@@ -830,7 +756,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      font-family: 'El Messiri', 'Amiri', 'Cairo', sans-serif;
+      font-family: 'Playfair Display', 'Abril Fatface', 'Cairo', sans-serif;
       margin: 0;
       letter-spacing: -0.2px;
     }
@@ -846,7 +772,7 @@
 
     .event-button {
       background: linear-gradient(135deg, #d4af85 0%, #e6c9a8 100%);
-      color: #050a14;
+      color: #0d3b2a;
       border: none;
       padding: 1rem 1.5rem;
       border-radius: 12px;
@@ -927,7 +853,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      font-family: 'El Messiri', 'Amiri', 'Cairo', sans-serif;
+      font-family: 'Playfair Display', 'Abril Fatface', 'El Messiri', 'Cairo', sans-serif;
       margin-bottom: 1rem;
       text-align: center;
       letter-spacing: -0.5px;
@@ -958,7 +884,7 @@
     }
 
     .game-card {
-      background: linear-gradient(135deg, #0a1e3d 0%, #050a14 100%);
+      background: linear-gradient(135deg, #1a5f47 0%, #0d3b2a 100%);
       border: 3px solid #d4af85;
       border-radius: 16px;
       padding: 2rem;
@@ -998,13 +924,8 @@
     .game-card:hover {
       transform: translateY(-12px) scale(1.02);
       border-color: #f5deb3;
-      background: linear-gradient(135deg, #050a14 0%, #0a1e3d 100%);
-      box-shadow: 0 20px 50px rgba(212, 175, 133, 0.5), inset 0 1px 0 rgba(212, 175, 133, 0.3);
-    }
-
-    .game-card:hover .game-status {
-      box-shadow: 0 0 20px rgba(212, 175, 133, 0.8), 0 0 40px rgba(212, 175, 133, 0.4);
-      transform: scale(1.05);
+      background: linear-gradient(135deg, #0d3b2a 0%, #1a5f47 100%);
+      box-shadow: 0 15px 40px rgba(212, 175, 133, 0.3), inset 0 1px 0 rgba(212, 175, 133, 0.2);
     }
 
     .game-card:hover::after {
@@ -1032,7 +953,7 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 0.8rem;
-      font-family: 'El Messiri', 'Amiri', 'Cairo', sans-serif;
+      font-family: 'Playfair Display', 'Abril Fatface', 'Cairo', sans-serif;
       position: relative;
       z-index: 1;
       letter-spacing: 0.3px;
@@ -1040,7 +961,7 @@
 
     .game-status {
       font-size: 0.85rem;
-      color: #050a14;
+      color: #0d3b2a;
       font-weight: 800;
       background: linear-gradient(135deg, #d4af85 0%, #e6c9a8 100%);
       padding: 0.5rem 1rem;
@@ -1049,12 +970,11 @@
       position: relative;
       z-index: 1;
       font-family: 'Cairo', sans-serif;
-      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     /* PRICE SECTION */
     .price-section {
-      background: linear-gradient(135deg, #0a1e3d 0%, #050a14 100%);
+      background: linear-gradient(135deg, #1a5f47 0%, #0d3b2a 100%);
       border-radius: 16px;
       padding: 2.5rem;
       margin-bottom: 2.5rem;
@@ -1062,7 +982,6 @@
       box-shadow: 0 8px 25px rgba(212, 175, 133, 0.15);
       border-top: 5px solid #d4af85;
       position: relative;
-      scroll-margin-top: 110px;
     }
 
     .price-section::before {
@@ -1071,7 +990,7 @@
       top: -15px;
       left: 50%;
       transform: translateX(-50%);
-      background: linear-gradient(135deg, #0a1e3d 0%, #050a14 100%);
+      background: linear-gradient(135deg, #1a5f47 0%, #0d3b2a 100%);
       padding: 0 1rem;
       color: #d4af85;
       font-size: 1rem;
@@ -1102,7 +1021,7 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 2rem;
-      font-family: 'El Messiri', 'Amiri', 'Cairo', sans-serif;
+      font-family: 'Playfair Display', 'Abril Fatface', 'Cairo', sans-serif;
       letter-spacing: -0.3px;
     }
 
@@ -1113,7 +1032,7 @@
     }
 
     .price-item {
-      background: linear-gradient(135deg, #0a1e3d 0%, #050a14 100%);
+      background: linear-gradient(135deg, #1a5f47 0%, #0d3b2a 100%);
       border: 3px solid #d4af85;
       border-radius: 12px;
       padding: 1.4rem;
@@ -1127,17 +1046,20 @@
     }
 
     .price-item::before {
-      content: '✨';
+      content: '';
       position: absolute;
-      top: 5px;
-      right: 5px;
-      font-size: 0.8rem;
-      opacity: 0.3;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(212, 175, 133, 0.08) 8px, rgba(212, 175, 133, 0.08) 16px);
+      opacity: 0;
+      transition: opacity 0.3s;
     }
 
     .price-item:hover {
       border-color: #f5deb3;
-      background: linear-gradient(135deg, #050a14 0%, #0a1e3d 100%);
+      background: linear-gradient(135deg, #0d3b2a 0%, #1a5f47 100%);
       transform: scale(1.08);
       box-shadow: 0 10px 25px rgba(212, 175, 133, 0.25);
     }
@@ -1146,12 +1068,11 @@
       opacity: 1;
     }
 
-    .price-item.selected,
-    .price-item.active {
+    .price-item.selected {
       background: linear-gradient(135deg, #d4af85 0%, #e6c9a8 100%);
-      color: #050a14;
-      border-color: #ffd700;
-      box-shadow: 0 0 15px rgba(255, 215, 0, 0.5), 0 12px 35px rgba(212, 175, 133, 0.4);
+      color: #0d3b2a;
+      border-color: #f5deb3;
+      box-shadow: 0 12px 35px rgba(212, 175, 133, 0.4);
       transform: scale(1.1);
     }
 
@@ -1166,7 +1087,7 @@
     }
 
     .price-item.selected .price-amount {
-      color: #050a14;
+      color: #0d3b2a;
     }
 
     .price-rupiah {
@@ -1178,7 +1099,7 @@
     }
 
     .price-item.selected .price-rupiah {
-      color: #050a14;
+      color: #0d3b2a;
     }
 
     .price-habis {
@@ -1205,7 +1126,7 @@
 
     /* FORM SECTION */
     .form-section {
-      background: linear-gradient(135deg, #0a1e3d 0%, #050a14 100%);
+      background: linear-gradient(135deg, #1a5f47 0%, #0d3b2a 100%);
       border-radius: 16px;
       padding: 2.5rem;
       margin-bottom: 2.5rem;
@@ -1213,20 +1134,19 @@
       box-shadow: 0 8px 25px rgba(212, 175, 133, 0.15);
       border-top: 5px solid #d4af85;
       position: relative;
-      scroll-margin-top: 110px;
     }
 
     .form-section::before {
-      content: '🌙 ✨ 🌙';
+      content: '◆ ◆ ◆ ◆ ◆';
       position: absolute;
       top: -15px;
       left: 50%;
       transform: translateX(-50%);
-      background: linear-gradient(135deg, #0a1e3d 0%, #050a14 100%);
+      background: linear-gradient(135deg, #1a5f47 0%, #0d3b2a 100%);
       padding: 0 1rem;
       color: #d4af85;
-      font-size: 1.2rem;
-      letter-spacing: 5px;
+      font-size: 1rem;
+      letter-spacing: 10px;
     }
 
     .form-section.active {
@@ -1242,7 +1162,7 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       margin-bottom: 2rem;
-      font-family: 'El Messiri', 'Amiri', 'Cairo', sans-serif;
+      font-family: 'Playfair Display', 'Abril Fatface', 'Cairo', sans-serif;
       letter-spacing: -0.3px;
     }
 
@@ -1256,7 +1176,7 @@
     }
 
     .order-summary::before {
-      content: '🎁';
+      content: '📦';
       position: absolute;
       top: -10px;
       left: 20px;
@@ -1338,7 +1258,7 @@
       width: 48px;
       height: 48px;
       border: 3px solid #d4af85;
-      background: linear-gradient(135deg, #0a1e3d 0%, #050a14 100%);
+      background: linear-gradient(135deg, #1a5f47 0%, #0d3b2a 100%);
       border-radius: 10px;
       font-size: 1.4rem;
       font-weight: 800;
@@ -1353,7 +1273,7 @@
 
     .qty-btn:hover {
       background: linear-gradient(135deg, #d4af85 0%, #e6c9a8 100%);
-      color: #050a14;
+      color: #0d3b2a;
       transform: scale(1.1);
     }
 
@@ -1396,7 +1316,7 @@
 
     .payment-option.selected {
       background: linear-gradient(135deg, #d4af85 0%, #e6c9a8 100%);
-      color: #050a14;
+      color: #0d3b2a;
       border-color: #f5deb3;
       box-shadow: 0 8px 20px rgba(212, 175, 133, 0.3);
     }
@@ -1416,7 +1336,7 @@
 
     .btn-primary {
       background: linear-gradient(135deg, #d4af85 0%, #e6c9a8 100%);
-      color: #050a14;
+      color: #0d3b2a;
       margin-bottom: 1rem;
       box-shadow: 0 8px 20px rgba(212, 175, 133, 0.25);
     }
@@ -1446,8 +1366,8 @@
 
     /* FOOTER */
     .footer {
-      background: linear-gradient(135deg, #050a14 0%, #0a1e3d 50%, #050a14 100%);
-      color: #f5deb3;
+      background: linear-gradient(135deg, #0d3b2a 0%, #1a5f47 50%, #0d3b2a 100%);
+      color: #e5ddd0;
       padding: 3.5rem 2rem;
       text-align: center;
       margin-top: 3rem;
@@ -1478,24 +1398,13 @@
       margin-bottom: 1rem;
       animation: moonFloat 4s ease-in-out infinite;
       filter: drop-shadow(0 0 30px rgba(212, 175, 133, 0.6));
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-    }
-
-    .footer-decorations::before {
-      content: '🌙';
-    }
-
-    .footer-decorations::after {
-      content: '✨';
     }
 
     .footer-title {
       font-size: 2.5rem;
       font-weight: 900;
       margin-bottom: 1.5rem;
-      font-family: 'El Messiri', 'Amiri', 'Cairo', sans-serif;
+      font-family: 'Playfair Display', 'Abril Fatface', 'Cairo', sans-serif;
       background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -1505,7 +1414,7 @@
 
     .footer-button {
       background: linear-gradient(135deg, #d4af85 0%, #e6c9a8 100%);
-      color: #050a14;
+      color: #0d3b2a;
       padding: 1.1rem 2.2rem;
       border-radius: 10px;
       border: none;
@@ -1575,7 +1484,7 @@
     }
 
     .modal-content {
-      background: linear-gradient(135deg, #0a1e3d 0%, #050a14 100%);
+      background: linear-gradient(135deg, #1a5f47 0%, #0d3b2a 100%);
       border-radius: 16px;
       padding: 2.5rem;
       max-width: 500px;
@@ -1588,7 +1497,7 @@
 
     /* RECEIPT MODAL STYLING */
     .receipt-modal .modal-content {
-      background: linear-gradient(135deg, #0a1e3d 0%, #050a14 100%);
+      background: linear-gradient(135deg, #1f4d3a 0%, #0d3b2a 100%);
       border: 3px solid #d4af85;
       border-radius: 20px;
       padding: 0;
@@ -1598,7 +1507,7 @@
 
     .receipt-header {
       background: linear-gradient(135deg, #d4af85 0%, #e6c9a8 100%);
-      color: #050a14;
+      color: #0d3b2a;
       padding: 2rem 1.5rem;
       text-align: center;
       border-radius: 17px 17px 0 0;
@@ -1617,8 +1526,8 @@
         45deg,
         transparent,
         transparent 10px,
-        rgba(10, 30, 61, 0.05) 10px,
-        rgba(10, 30, 61, 0.05) 20px
+        rgba(13, 59, 42, 0.05) 10px,
+        rgba(13, 59, 42, 0.05) 20px
       );
       pointer-events: none;
     }
@@ -1640,7 +1549,7 @@
     .receipt-title {
       font-size: 1.8rem;
       font-weight: 900;
-      font-family: 'El Messiri', 'Amiri', 'Cairo', sans-serif;
+      font-family: 'Playfair Display', 'Abril Fatface', 'Cairo', sans-serif;
       position: relative;
       z-index: 1;
       letter-spacing: 0.3px;
@@ -1778,6 +1687,44 @@
       gap: 1rem;
     }
 
+    .receipt-code-section {
+      background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), rgba(76, 175, 80, 0.08));
+      border: 2px solid #4caf50;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .receipt-code-label {
+      font-size: 0.85rem;
+      color: #90ee90;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+      margin-bottom: 0.6rem;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .receipt-code-value {
+      font-size: 1.6rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #90ee90 0%, #7fff7f 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'El Messiri', 'Cairo', sans-serif;
+      word-break: break-all;
+      letter-spacing: 1px;
+    }
+
+    .receipt-code-info {
+      font-size: 0.8rem;
+      color: #90ee90;
+      margin-top: 0.8rem;
+      font-weight: 700;
+      font-style: italic;
+    }
 
     .modal-header {
       text-align: center;
@@ -1793,7 +1740,7 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      font-family: 'El Messiri', 'Amiri', 'Cairo', sans-serif;
+      font-family: 'Playfair Display', 'Abril Fatface', 'Cairo', sans-serif;
       letter-spacing: -0.3px;
     }
 
@@ -1852,22 +1799,16 @@
       letter-spacing: 0.1px;
     }
 
-    .status-proses {
+    .status-pending {
       background: rgba(255, 215, 0, 0.2);
       color: #ffed4e;
       border: 1px solid #ffed4e;
     }
 
-    .status-berhasil {
-      background: rgba(212, 175, 133, 0.2);
-      color: #ffd700;
-      border: 1px solid #ffd700;
-    }
-
-    .status-gagal {
-      background: rgba(239, 68, 68, 0.2);
-      color: #fca5a5;
-      border: 1px solid #fca5a5;
+    .status-completed {
+      background: rgba(76, 175, 80, 0.2);
+      color: #90ee90;
+      border: 1px solid #90ee90;
     }
 
     /* RESPONSIVE */
@@ -2168,180 +2109,3 @@
       object-fit: cover;
       border-radius: 6px;
     }
-
-@keyframes slideIn {
-  from { transform: translateX(100%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slideOut {
-  from { transform: translateX(0); opacity: 1; }
-  to { transform: translateX(100%); opacity: 0; }
-}
-
-/* Admin Styles */
-.admin-dashboard {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: #050a14;
-  z-index: 10001;
-  overflow-y: auto;
-  padding: 2rem 1rem;
-}
-
-.admin-dashboard.active {
-  display: block;
-}
-
-.admin-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.admin-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  border-bottom: 2px solid #d4af85;
-  padding-bottom: 1rem;
-}
-
-.admin-title {
-  color: #ffd700;
-  font-family: 'El Messiri', 'Amiri', serif;
-  margin: 0;
-}
-
-.admin-tabs {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  overflow-x: auto;
-  padding-bottom: 0.5rem;
-}
-
-.admin-tab {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid #d4af85;
-  color: #d4af85;
-  padding: 0.8rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.3s ease;
-}
-
-.admin-tab.active {
-  background: #d4af85;
-  color: #050a14;
-  font-weight: 700;
-}
-
-.admin-tab-content {
-  display: none;
-}
-
-.admin-tab-content.active {
-  display: block;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.stat-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(212, 175, 133, 0.3);
-  padding: 1.5rem;
-  border-radius: 16px;
-  text-align: center;
-}
-
-.stat-card.gold {
-  border-color: #ffd700;
-  background: rgba(255, 215, 0, 0.05);
-}
-
-.stat-label {
-  color: #d4af85;
-  font-size: 0.9rem;
-  margin-bottom: 0.5rem;
-}
-
-.stat-value {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: #fff;
-}
-
-.text-success { color: #ffd700; }
-.text-warning { color: #fbbf24; }
-.text-danger { color: #f87171; }
-
-.table-container {
-  overflow-x: auto;
-  background: rgba(255, 255, 255, 0.03);
-  border-radius: 12px;
-  border: 1px solid rgba(212, 175, 133, 0.2);
-}
-
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 800px;
-}
-
-.admin-table th, .admin-table td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid rgba(212, 175, 133, 0.1);
-}
-
-.admin-table th {
-  background: rgba(212, 175, 133, 0.1);
-  color: #ffd700;
-}
-
-.admin-filter {
-  margin-bottom: 1rem;
-  max-width: 300px;
-}
-
-.btn-sm {
-  padding: 0.4rem 0.8rem;
-  font-size: 0.8rem;
-}
-
-.status-badge {
-  padding: 0.3rem 0.6rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.status-proses { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
-.status-berhasil { background: rgba(212, 175, 133, 0.2); color: #ffd700; }
-.status-gagal { background: rgba(248, 113, 113, 0.2); color: #f87171; }
-
-.price-input-sm {
-  width: 100px;
-  padding: 0.3rem;
-  font-size: 0.9rem;
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid #d4af85;
-  color: #fff;
-  border-radius: 4px;
-}
-
-.admin-modal-content {
-  max-width: 400px;
-}
