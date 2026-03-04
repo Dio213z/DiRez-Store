@@ -755,20 +755,14 @@ WhatsApp Admin: https://wa.me/6285646335331
   function openHistory(e) {
     if (e) e.preventDefault();
 
-    // Auto fill phone number if exists
-    const lastPhone = localStorage.getItem('direz_last_whatsapp') || document.getElementById('whatsapp').value;
     const phoneInput = document.getElementById('historyPhoneInput');
 
     document.getElementById('historyFormSection').style.display = 'block';
     document.getElementById('historyList').style.display = 'none';
     document.getElementById('historyModal').classList.add('show');
 
-    if (lastPhone) {
-      phoneInput.value = lastPhone;
-      searchHistory();
-    } else {
-      phoneInput.value = '';
-    }
+    // Always clear phone input so user must enter it manually
+    phoneInput.value = '';
   }
 
   function searchHistory() {
