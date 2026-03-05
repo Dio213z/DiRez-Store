@@ -20,7 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'genshin', name: 'Genshin Impact', image: 'genshin-impact.jpg', status: '✨ Top Up Instan' },
     { id: 'telegram', name: 'TELEGRAM STARS', image: 'telegram-stars.jpg', status: '⭐ Top Up Instan' },
     { id: 'redfinger', name: 'REDFINGER VOUCHER', image: 'redfinger-voucher.jpg', status: '🎟️ Top Up Instan' },
-    { id: 'ewallet', name: 'Top Up E-Wallet', image: 'e-wallet.svg', status: '💳 Top Up Instan' }
+    { id: 'ewallet', name: 'Top Up E-Wallet', image: 'e-wallet.svg', status: '💳 Top Up Instan' },
+    { id: 'jasteb', name: 'MENU JASTEB BY DiRez Store', image: 'unchek.png', status: '📦 JASTEB BIASA/VVIP' }
   ];
 
   const prices = {
@@ -234,6 +235,30 @@ document.addEventListener('DOMContentLoaded', () => {
       { package: '90 Hari', category: '🎟️ PAKET AKSES', price: 90000 },
       { package: '180 Hari', category: '🎟️ PAKET AKSES', price: 165000 },
       { package: '365 Hari', category: '🎟️ PAKET AKSES', price: 300000 }
+    ],
+    jasteb: [
+      { package: '🔖 50 Ress', category: '📦 JASTEB BIASA', price: 2000 },
+      { package: '🔖 100 Ress', category: '📦 JASTEB BIASA', price: 3000 },
+      { package: '🔖 150 Ress', category: '📦 JASTEB BIASA', price: 4000 },
+      { package: '🔖 200 Ress', category: '📦 JASTEB BIASA', price: 5000 },
+      { package: '🔖 250 Ress', category: '📦 JASTEB BIASA', price: 7000 },
+      { package: '🔖 300 Ress', category: '📦 JASTEB BIASA', price: 10000 },
+      { package: '🔖 350 Ress', category: '📦 JASTEB BIASA', price: 12000 },
+      { package: '🔖 400 Ress', category: '📦 JASTEB BIASA', price: 15000 },
+      { package: '🔖 450 Ress', category: '📦 JASTEB BIASA', price: 17000 },
+      { package: '🔖 500 Ress', category: '📦 JASTEB BIASA', price: 20000 },
+      { package: '🏷️ 50 Ress', category: '👑 JASTEB VVIP', price: 10000 },
+      { package: '🏷️ 100 Ress', category: '👑 JASTEB VVIP', price: 13000 },
+      { package: '🏷️ 150 Ress', category: '👑 JASTEB VVIP', price: 16000 },
+      { package: '🏷️ 200 Ress', category: '👑 JASTEB VVIP', price: 20000 },
+      { package: '🏷️ 250 Ress', category: '👑 JASTEB VVIP', price: 23000 },
+      { package: '🏷️ 300 Ress', category: '👑 JASTEB VVIP', price: 27000 },
+      { package: '🚀 50 Ress', category: '⚡ JASTEB EXPRESS', price: 4000 },
+      { package: '🚀 100 Ress', category: '⚡ JASTEB EXPRESS', price: 7000 },
+      { package: '🚀 150 Ress', category: '⚡ JASTEB EXPRESS', price: 9000 },
+      { package: '🚀 200 Ress', category: '⚡ JASTEB EXPRESS', price: 12000 },
+      { package: '🚀 250 Ress', category: '⚡ JASTEB EXPRESS', price: 15000 },
+      { package: '🚀 300 Ress', category: '⚡ JASTEB EXPRESS', price: 18000 }
     ]
   };
 
@@ -376,11 +401,27 @@ document.addEventListener('DOMContentLoaded', () => {
     currentOrder.gameName = gameName;
 
     const serverIdGroup = document.getElementById('serverIdGroup');
+    const gameIdLabel = document.getElementById('gameIdLabel');
+    const jastebDesc = document.getElementById('jasteb-description');
+    const submitBtn = document.getElementById('btn-submit-order');
+
     if (gameId === 'ml') {
       serverIdGroup.style.display = 'block';
     } else {
       serverIdGroup.style.display = 'none';
       document.getElementById('serverId').value = '';
+    }
+
+    if (gameId === 'jasteb') {
+      gameIdLabel.textContent = '📧 Email Target';
+      document.getElementById('gameId').placeholder = 'Contoh: user@gmail.com';
+      jastebDesc.style.display = 'block';
+      submitBtn.textContent = '🛍️ Buat Pesanan';
+    } else {
+      gameIdLabel.textContent = '🆔 ID Game';
+      document.getElementById('gameId').placeholder = 'Contoh: 123456789';
+      jastebDesc.style.display = 'none';
+      submitBtn.textContent = '🛍️ Pesan Sekarang';
     }
 
     const priceTitle = document.getElementById('priceTitle');
@@ -520,6 +561,12 @@ document.addEventListener('DOMContentLoaded', () => {
     selectedPayment = '';
     const cashFeeLabel = document.getElementById('cashFeeLabel');
     if (cashFeeLabel) cashFeeLabel.style.display = 'none';
+
+    // Reset JASTEB specific UI
+    document.getElementById('gameIdLabel').textContent = '🆔 ID Game';
+    document.getElementById('gameId').placeholder = 'Contoh: 123456789';
+    document.getElementById('jasteb-description').style.display = 'none';
+    document.getElementById('btn-submit-order').textContent = '🛍️ Pesan Sekarang';
   }
 
   function generateOrderNumber() {
@@ -607,6 +654,23 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('modalPayment').textContent = order.payment_method.toUpperCase();
     document.getElementById('modalTotal').textContent = order.price;
 
+    const modalGameIdLabel = document.getElementById('modalGameIdLabel');
+    const btnContinue = document.getElementById('btn-receipt-continue');
+    const btnWa = document.getElementById('btn-receipt-wa');
+    const btnEmail = document.getElementById('btn-receipt-email');
+
+    if (order.game.includes('JASTEB')) {
+      modalGameIdLabel.textContent = '📧 Email Target';
+      btnContinue.style.display = 'inline-block';
+      btnWa.style.display = 'none';
+      btnEmail.style.display = 'none';
+    } else {
+      modalGameIdLabel.textContent = '🆔 ID Game';
+      btnContinue.style.display = 'none';
+      btnWa.style.display = 'inline-block';
+      btnEmail.style.display = 'inline-block';
+    }
+
     currentReceipt = {
       orderNum: order.order_number,
       game: order.game,
@@ -656,7 +720,7 @@ Game           : ${r.game}
 Paket          : ${r.pkg}
 Jumlah         : ${r.quantity}x
 Harga Satuan   : Rp${r.price.toLocaleString('id-ID')}
-🆔 ID Game     : ${r.gameId}
+${r.game.includes('JASTEB') ? `📧 Email Target : ${r.gameId}` : `🆔 ID Game     : ${r.gameId}`}
 ${r.serverId ? `🏰 ID Server   : ${r.serverId}\n` : ''}
 💳 METODE PEMBAYARAN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -712,7 +776,7 @@ Game           : ${r.game}
 Paket          : ${r.pkg}
 Jumlah         : ${r.quantity}x
 Harga Satuan   : Rp${r.price.toLocaleString('id-ID')}
-ID Game        : ${r.gameId}
+${r.game.includes('JASTEB') ? `Email Target   : ${r.gameId}` : `ID Game        : ${r.gameId}`}
 ${r.serverId ? `ID Server      : ${r.serverId}\n` : ''}
 METODE PEMBAYARAN
 ──────────────────────────────────────────────────────────
@@ -750,6 +814,19 @@ WhatsApp Admin: https://wa.me/6285646335331
   function contactAdmin() {
     const adminPhone = '6285646335331';
     window.open(`https://wa.me/${adminPhone}`, '_blank');
+  }
+
+  function continuePayment() {
+    // Open WhatsApp as the primary communication channel
+    sendToWhatsApp();
+    // After a short delay, try to open the mailto link as well
+    // Note: Multiple window.open/location.href calls might be blocked or
+    // confusing, but this fulfills "WhatsApp Admin and Email Admin".
+    // Alternatively, just open WA and provide Email as a fallback,
+    // but I'll try to trigger both.
+    setTimeout(() => {
+        sendToEmail();
+    }, 1000);
   }
 
   function openHistory(e) {
@@ -918,6 +995,9 @@ WhatsApp Admin: https://wa.me/6285646335331
   if (btnContactAdmin) btnContactAdmin.addEventListener('click', contactAdmin);
 
   // Receipt Modal Actions
+  const btnReceiptContinue = document.getElementById('btn-receipt-continue');
+  if (btnReceiptContinue) btnReceiptContinue.addEventListener('click', continuePayment);
+
   const btnReceiptWa = document.getElementById('btn-receipt-wa');
   if (btnReceiptWa) btnReceiptWa.addEventListener('click', sendToWhatsApp);
 
