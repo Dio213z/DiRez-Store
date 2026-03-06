@@ -23,10 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'ewallet', name: 'Top Up E-Wallet', image: 'e-wallet.svg', status: '💳 Top Up Instan' }
   ];
 
-  const specialServices = [
-    { id: 'jasteb', name: 'MENU JASTEB BY DiRez Store', image: 'unchek.png', status: '📦 JASTEB BIASA/VVIP' }
-  ];
-
   const prices = {
     ml: [
       { package: '👑 Weekly Diamond Pass', category: '👑 WEEKLY DIAMOND PASS', price: 28777 },
@@ -238,30 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
       { package: '90 Hari', category: '🎟️ PAKET AKSES', price: 90000 },
       { package: '180 Hari', category: '🎟️ PAKET AKSES', price: 165000 },
       { package: '365 Hari', category: '🎟️ PAKET AKSES', price: 300000 }
-    ],
-    jasteb: [
-      { package: '🔖 50 Ress', category: '📦 JASTEB BIASA', price: 2000 },
-      { package: '🔖 100 Ress', category: '📦 JASTEB BIASA', price: 3000 },
-      { package: '🔖 150 Ress', category: '📦 JASTEB BIASA', price: 4000 },
-      { package: '🔖 200 Ress', category: '📦 JASTEB BIASA', price: 5000 },
-      { package: '🔖 250 Ress', category: '📦 JASTEB BIASA', price: 7000 },
-      { package: '🔖 300 Ress', category: '📦 JASTEB BIASA', price: 10000 },
-      { package: '🔖 350 Ress', category: '📦 JASTEB BIASA', price: 12000 },
-      { package: '🔖 400 Ress', category: '📦 JASTEB BIASA', price: 15000 },
-      { package: '🔖 450 Ress', category: '📦 JASTEB BIASA', price: 17000 },
-      { package: '🔖 500 Ress', category: '📦 JASTEB BIASA', price: 20000 },
-      { package: '🏷️ 50 Ress', category: '👑 JASTEB VVIP', price: 10000 },
-      { package: '🏷️ 100 Ress', category: '👑 JASTEB VVIP', price: 13000 },
-      { package: '🏷️ 150 Ress', category: '👑 JASTEB VVIP', price: 16000 },
-      { package: '🏷️ 200 Ress', category: '👑 JASTEB VVIP', price: 20000 },
-      { package: '🏷️ 250 Ress', category: '👑 JASTEB VVIP', price: 23000 },
-      { package: '🏷️ 300 Ress', category: '👑 JASTEB VVIP', price: 27000 },
-      { package: '🚀 50 Ress', category: '⚡ JASTEB EXPRESS', price: 4000 },
-      { package: '🚀 100 Ress', category: '⚡ JASTEB EXPRESS', price: 7000 },
-      { package: '🚀 150 Ress', category: '⚡ JASTEB EXPRESS', price: 9000 },
-      { package: '🚀 200 Ress', category: '⚡ JASTEB EXPRESS', price: 12000 },
-      { package: '🚀 250 Ress', category: '⚡ JASTEB EXPRESS', price: 15000 },
-      { package: '🚀 300 Ress', category: '⚡ JASTEB EXPRESS', price: 18000 }
     ]
   };
 
@@ -276,7 +248,6 @@ document.addEventListener('DOMContentLoaded', () => {
       await window.dataSdk.init(dataHandler);
     }
     renderGames();
-    renderSpecialServices();
   }
 
   function scrollToTop() {
@@ -352,28 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function renderSpecialServices() {
-    const grid = document.getElementById('specialServicesGrid');
-    if (!grid) return;
-    grid.innerHTML = '';
-
-    specialServices.forEach(service => {
-      const card = document.createElement('div');
-      card.className = 'game-card';
-
-      card.addEventListener('click', () => showPrices(service.id, service.name));
-
-      card.innerHTML = `
-        <div class="game-icon">
-          <img src="assets/Picture/${service.image}" alt="${service.name}" loading="lazy" onerror="this.src='assets/Picture/default-game.jpg'">
-        </div>
-        <div class="game-name">${service.name}</div>
-        <div class="game-status">${service.status}</div>
-      `;
-      grid.appendChild(card);
-    });
-  }
-
   function searchGames() {
     const input = document.getElementById('searchInput');
     const dropdown = document.getElementById('searchDropdown');
@@ -384,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const filtered = [...games, ...specialServices].filter(game =>
+    const filtered = games.filter(game =>
       game.name.toLowerCase().includes(inputValue) ||
       game.id.toLowerCase().includes(inputValue)
     );
@@ -427,27 +376,11 @@ document.addEventListener('DOMContentLoaded', () => {
     currentOrder.gameName = gameName;
 
     const serverIdGroup = document.getElementById('serverIdGroup');
-    const gameIdLabel = document.getElementById('gameIdLabel');
-    const jastebDesc = document.getElementById('jasteb-description');
-    const submitBtn = document.getElementById('btn-submit-order');
-
     if (gameId === 'ml') {
       serverIdGroup.style.display = 'block';
     } else {
       serverIdGroup.style.display = 'none';
       document.getElementById('serverId').value = '';
-    }
-
-    if (gameId === 'jasteb') {
-      gameIdLabel.textContent = '📧 Email Target';
-      document.getElementById('gameId').placeholder = 'Contoh: user@gmail.com';
-      jastebDesc.style.display = 'block';
-      submitBtn.textContent = '🛍️ Buat Pesanan';
-    } else {
-      gameIdLabel.textContent = '🆔 ID Game';
-      document.getElementById('gameId').placeholder = 'Contoh: 123456789';
-      jastebDesc.style.display = 'none';
-      submitBtn.textContent = '🛍️ Pesan Sekarang';
     }
 
     const priceTitle = document.getElementById('priceTitle');
@@ -587,12 +520,6 @@ document.addEventListener('DOMContentLoaded', () => {
     selectedPayment = '';
     const cashFeeLabel = document.getElementById('cashFeeLabel');
     if (cashFeeLabel) cashFeeLabel.style.display = 'none';
-
-    // Reset JASTEB specific UI
-    document.getElementById('gameIdLabel').textContent = '🆔 ID Game';
-    document.getElementById('gameId').placeholder = 'Contoh: 123456789';
-    document.getElementById('jasteb-description').style.display = 'none';
-    document.getElementById('btn-submit-order').textContent = '🛍️ Pesan Sekarang';
   }
 
   function generateOrderNumber() {
@@ -626,91 +553,39 @@ document.addEventListener('DOMContentLoaded', () => {
       game: currentOrder.gameName,
       package: currentOrder.package,
       price: `Rp${total.toLocaleString('id-ID')}`,
-      raw_price: currentOrder.price,
-      quantity: currentOrder.quantity,
-      total: total,
       game_id: gameId,
       server_id: serverId,
       nickname: nickname,
       whatsapp: whatsapp,
       email: email,
       payment_method: selectedPayment,
-      status: 'proses',
+      status: 'pending',
       order_date: new Date().toISOString()
     };
-
-    // Save locally for immediate history access
-    saveOrderLocally(orderData);
 
     if (window.dataSdk) {
       const result = await window.dataSdk.create(orderData);
       if (result.isOk) {
-        showReceipt(orderData);
+        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email);
         cancelOrder();
       }
     } else {
-        // Fallback for when SDK is missing
-        showReceipt(orderData);
+        // Fallback for when SDK is missing (for local testing)
+        showReceipt(orderNum, currentOrder.gameName, currentOrder.package, nickname, total, selectedPayment, gameId, serverId, email);
         cancelOrder();
     }
   }
 
-  function saveOrderLocally(order) {
-    let localHistory = JSON.parse(localStorage.getItem('direz_history') || '[]');
-    // Avoid duplicates if possible, though orderNum should be unique
-    if (!localHistory.find(o => o.order_number === order.order_number)) {
-      localHistory.push(order);
-      localStorage.setItem('direz_history', JSON.stringify(localHistory));
-    }
+  function showReceipt(orderNum, game, pkg, nickname, total, payment, gameId, serverId, email) {
+    document.getElementById('modalOrderNum').textContent = orderNum;
+    document.getElementById('modalGame').textContent = game;
+    document.getElementById('modalPackage').textContent = pkg;
+    document.getElementById('modalGameId').textContent = gameId;
+    document.getElementById('modalNickname').textContent = nickname;
+    document.getElementById('modalPayment').textContent = payment.toUpperCase();
+    document.getElementById('modalTotal').textContent = `Rp${total.toLocaleString('id-ID')}`;
 
-    // Update global allOrders to include this new local order immediately
-    if (!allOrders.find(o => o.order_number === order.order_number)) {
-      allOrders.push(order);
-    }
-
-    localStorage.setItem('direz_last_whatsapp', order.whatsapp);
-  }
-
-  function showReceipt(order) {
-    document.getElementById('modalOrderNum').textContent = order.order_number;
-    document.getElementById('modalGame').textContent = order.game;
-    document.getElementById('modalPackage').textContent = order.package;
-    document.getElementById('modalGameId').textContent = order.game_id;
-    document.getElementById('modalNickname').textContent = order.nickname;
-    document.getElementById('modalPayment').textContent = order.payment_method.toUpperCase();
-    document.getElementById('modalTotal').textContent = order.price;
-
-    const modalGameIdLabel = document.getElementById('modalGameIdLabel');
-    const btnContinue = document.getElementById('btn-receipt-continue');
-    const btnWa = document.getElementById('btn-receipt-wa');
-    const btnEmail = document.getElementById('btn-receipt-email');
-
-    if (order.game.includes('JASTEB')) {
-      modalGameIdLabel.textContent = '📧 Email Target';
-      btnContinue.style.display = 'inline-block';
-      btnWa.style.display = 'none';
-      btnEmail.style.display = 'none';
-    } else {
-      modalGameIdLabel.textContent = '🆔 ID Game';
-      btnContinue.style.display = 'none';
-      btnWa.style.display = 'inline-block';
-      btnEmail.style.display = 'inline-block';
-    }
-
-    currentReceipt = {
-      orderNum: order.order_number,
-      game: order.game,
-      pkg: order.package,
-      nickname: order.nickname,
-      total: order.total || (typeof order.price === 'string' ? parseInt(order.price.replace(/[^0-9]/g, '')) : order.price),
-      payment: order.payment_method,
-      whatsapp: order.whatsapp,
-      email: order.email,
-      gameId: order.game_id,
-      serverId: order.server_id,
-      quantity: order.quantity || 1,
-      price: order.raw_price || 0
-    };
+    currentReceipt = { orderNum, game, pkg, nickname, total, payment, whatsapp: document.getElementById('whatsapp').value, email: email, gameId, serverId, quantity: currentOrder.quantity, price: currentOrder.price };
     document.getElementById('receiptModal').classList.add('show');
   }
 
@@ -746,7 +621,7 @@ Game           : ${r.game}
 Paket          : ${r.pkg}
 Jumlah         : ${r.quantity}x
 Harga Satuan   : Rp${r.price.toLocaleString('id-ID')}
-${r.game.includes('JASTEB') ? `📧 Email Target : ${r.gameId}` : `🆔 ID Game     : ${r.gameId}`}
+🆔 ID Game     : ${r.gameId}
 ${r.serverId ? `🏰 ID Server   : ${r.serverId}\n` : ''}
 💳 METODE PEMBAYARAN
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -802,7 +677,7 @@ Game           : ${r.game}
 Paket          : ${r.pkg}
 Jumlah         : ${r.quantity}x
 Harga Satuan   : Rp${r.price.toLocaleString('id-ID')}
-${r.game.includes('JASTEB') ? `Email Target   : ${r.gameId}` : `ID Game        : ${r.gameId}`}
+ID Game        : ${r.gameId}
 ${r.serverId ? `ID Server      : ${r.serverId}\n` : ''}
 METODE PEMBAYARAN
 ──────────────────────────────────────────────────────────
@@ -842,30 +717,12 @@ WhatsApp Admin: https://wa.me/6285646335331
     window.open(`https://wa.me/${adminPhone}`, '_blank');
   }
 
-  function continuePayment() {
-    // Open WhatsApp as the primary communication channel
-    sendToWhatsApp();
-    // After a short delay, try to open the mailto link as well
-    // Note: Multiple window.open/location.href calls might be blocked or
-    // confusing, but this fulfills "WhatsApp Admin and Email Admin".
-    // Alternatively, just open WA and provide Email as a fallback,
-    // but I'll try to trigger both.
-    setTimeout(() => {
-        sendToEmail();
-    }, 1000);
-  }
-
   function openHistory(e) {
     if (e) e.preventDefault();
-
-    const phoneInput = document.getElementById('historyPhoneInput');
-
+    document.getElementById('historyPhoneInput').value = '';
     document.getElementById('historyFormSection').style.display = 'block';
     document.getElementById('historyList').style.display = 'none';
     document.getElementById('historyModal').classList.add('show');
-
-    // Always clear phone input so user must enter it manually
-    phoneInput.value = '';
   }
 
   function searchHistory() {
@@ -882,20 +739,7 @@ WhatsApp Admin: https://wa.me/6285646335331
       return;
     }
 
-    // Combine local history with SDK history
-    let localHistory = JSON.parse(localStorage.getItem('direz_history') || '[]');
-    let combinedOrders = [...allOrders];
-
-    localHistory.forEach(localOrder => {
-      if (!combinedOrders.find(o => o.order_number === localOrder.order_number)) {
-        combinedOrders.push(localOrder);
-      }
-    });
-
-    const filteredOrders = combinedOrders
-      .filter(order => order.whatsapp === searchPhone)
-      .sort((a, b) => new Date(b.order_date) - new Date(a.order_date));
-
+    const filteredOrders = allOrders.filter(order => order.whatsapp === searchPhone);
     list.innerHTML = '';
 
     if (filteredOrders.length === 0) {
@@ -915,36 +759,20 @@ WhatsApp Admin: https://wa.me/6285646335331
       `;
       list.appendChild(notFoundDiv);
     } else {
-      filteredOrders.forEach((order) => {
+      filteredOrders.forEach((order, index) => {
         const item = document.createElement('div');
         item.className = 'history-item';
-
-        const status = order.status || 'proses';
-        const date = new Date(order.order_date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
-
         item.innerHTML = `
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem;">
-            <div class="history-order-num">
-              <span>📦</span>${order.order_number}
-            </div>
-            <span class="history-status status-${status}">${status}</span>
+          <div class="history-order-num">
+            <span>📦</span>${order.order_number}
           </div>
           <div class="history-details">
             <div><strong>🎮 Game:</strong> ${order.game} - ${order.package}</div>
             <div><strong>💰 Total:</strong> ${order.price}</div>
             <div><strong>👤 Nama:</strong> ${order.nickname}</div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; border-top: 1px solid rgba(212, 175, 133, 0.1); padding-top: 0.5rem;">
-               <span style="font-size: 0.75rem; opacity: 0.7;">📅 ${date}</span>
-               <span style="color: #ffd700; font-size: 0.8rem;">Lihat Detail ➔</span>
-            </div>
+            <div><strong>💳 Metode:</strong> ${order.payment_method.toUpperCase()}</div>
           </div>
         `;
-
-        item.addEventListener('click', () => {
-          showReceipt(order);
-          closeHistory();
-        });
-
         list.appendChild(item);
       });
     }
@@ -1021,9 +849,6 @@ WhatsApp Admin: https://wa.me/6285646335331
   if (btnContactAdmin) btnContactAdmin.addEventListener('click', contactAdmin);
 
   // Receipt Modal Actions
-  const btnReceiptContinue = document.getElementById('btn-receipt-continue');
-  if (btnReceiptContinue) btnReceiptContinue.addEventListener('click', continuePayment);
-
   const btnReceiptWa = document.getElementById('btn-receipt-wa');
   if (btnReceiptWa) btnReceiptWa.addEventListener('click', sendToWhatsApp);
 
