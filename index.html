@@ -103,13 +103,6 @@
         <div class="games-grid" id="gamesGrid"></div>
       </section>
 
-      <!-- SPECIAL SERVICES SECTION -->
-      <section id="special-services">
-        <h2 class="section-title">📦 Jasa & Kebutuhan JB</h2>
-        <p class="section-subtitle">Layanan Khusus • Proses Cepat • 100% Amanah</p>
-        <div class="games-grid" id="specialServicesGrid"></div>
-      </section>
-
       <!-- PRICE SECTION -->
       <section id="priceSection" class="price-section">
         <h3 class="price-header" id="priceTitle">💎 Pilih Paket</h3>
@@ -147,13 +140,8 @@
 
         <form id="orderForm">
           <div class="form-group">
-            <label class="form-label" id="gameIdLabel">🆔 ID Game</label>
+            <label class="form-label">🆔 ID Game</label>
             <input type="text" class="form-input" id="gameId" placeholder="Contoh: 123456789" required>
-          </div>
-
-          <div id="jasteb-description" style="display: none; background: rgba(212, 175, 133, 0.1); border: 1px dashed #d4af85; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem; color: #f4e4bc;">
-            <p style="margin: 0; font-weight: bold; color: #ffed4e;">ℹ️ Keterangan:</p>
-            <p style="margin: 5px 0 0 0;">Kemungkinan isi game random seperti: Free Fire, Mobile Legends, PUBG, Stumble Guys, dll. Hasil yang dikirim bersifat random.</p>
           </div>
 
           <div class="form-group server-id-group" id="serverIdGroup">
@@ -188,7 +176,7 @@
             <input type="hidden" id="paymentMethod" required>
           </div>
 
-          <button type="submit" class="btn btn-primary" id="btn-submit-order">🛍️ Pesan Sekarang</button>
+          <button type="submit" class="btn btn-primary">🛍️ Pesan Sekarang</button>
           <button type="button" class="btn btn-secondary" id="btn-cancel-order">Batal</button>
         </form>
       </section>
@@ -244,7 +232,7 @@
 
         <div class="receipt-row">
           <div>
-            <div class="receipt-label" id="modalGameIdLabel">🆔 ID Game</div>
+            <div class="receipt-label">🆔 ID Game</div>
             <div class="receipt-value" id="modalGameId">-</div>
           </div>
           <div>
@@ -273,7 +261,6 @@
 
       <div class="receipt-footer">
         <div class="receipt-actions">
-          <button class="btn btn-primary" id="btn-receipt-continue" style="display: none;">🚀 Lanjutkan Pembayaran</button>
           <button class="btn btn-primary" id="btn-receipt-wa">💬 Kirim ke WhatsApp</button>
           <button class="btn btn-primary btn-receipt-email" id="btn-receipt-email">📧 Kirim ke Email</button>
           <button class="btn btn-secondary" id="btn-receipt-close">Tutup</button>
