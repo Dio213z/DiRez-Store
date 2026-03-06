@@ -20,8 +20,13 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'genshin', name: 'Genshin Impact', image: 'genshin-impact.jpg', status: '✨ Top Up Instan' },
     { id: 'telegram', name: 'TELEGRAM STARS', image: 'telegram-stars.jpg', status: '⭐ Top Up Instan' },
     { id: 'redfinger', name: 'REDFINGER VOUCHER', image: 'redfinger-voucher.jpg', status: '🎟️ Top Up Instan' },
-    { id: 'ewallet', name: 'Top Up E-Wallet', image: 'e-wallet.svg', status: '💳 Top Up Instan' },
-    { id: 'jasteb', name: 'MENU JASTEB BY DiRez Store', image: 'unchek.png', status: '📦 JASTEB BIASA/VVIP' }
+    { id: 'ewallet', name: 'Top Up E-Wallet', image: 'e-wallet.svg', status: '💳 Top Up Instan' }
+  ];
+
+  const specialServices = [
+    { id: 'jasteb', name: 'MENU JASTEB BY DiRez Store', image: 'unchek.png', status: '📦 JASTEB BIASA/VVIP' },
+    { id: 'jb_kebutuhan', name: 'JB Kebutuhan Akun', image: 'unchek.png', status: '📦 Kebutuhan JB' },
+    { id: 'aplikasi_jb', name: 'Aplikasi Anak JB', image: 'unchek.png', status: '📱 Aplikasi JB' }
   ];
 
   const prices = {
@@ -259,6 +264,16 @@ document.addEventListener('DOMContentLoaded', () => {
       { package: '🚀 200 Ress', category: '⚡ JASTEB EXPRESS', price: 12000 },
       { package: '🚀 250 Ress', category: '⚡ JASTEB EXPRESS', price: 15000 },
       { package: '🚀 300 Ress', category: '⚡ JASTEB EXPRESS', price: 18000 }
+    ],
+    jb_kebutuhan: [
+      { package: '📦 Akun Standar', category: '📦 KEBUTUHAN AKUN', price: 50000 },
+      { package: '📦 Akun Premium', category: '📦 KEBUTUHAN AKUN', price: 100000 },
+      { package: '📦 Akun VVIP', category: '📦 KEBUTUHAN AKUN', price: 250000 }
+    ],
+    aplikasi_jb: [
+      { package: '📱 App JB Standar', category: '📱 APLIKASI ANAK JB', price: 25000 },
+      { package: '📱 App JB Pro', category: '📱 APLIKASI ANAK JB', price: 75000 },
+      { package: '📱 App JB Enterprise', category: '📱 APLIKASI ANAK JB', price: 150000 }
     ]
   };
 
@@ -273,6 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await window.dataSdk.init(dataHandler);
     }
     renderGames();
+    renderSpecialServices();
   }
 
   function scrollToTop() {
@@ -348,6 +364,28 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function renderSpecialServices() {
+    const grid = document.getElementById('specialServicesGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    specialServices.forEach(service => {
+      const card = document.createElement('div');
+      card.className = 'game-card';
+
+      card.addEventListener('click', () => showPrices(service.id, service.name));
+
+      card.innerHTML = `
+        <div class="game-icon">
+          <img src="assets/Picture/${service.image}" alt="${service.name}" loading="lazy" onerror="this.src='assets/Picture/default-game.jpg'">
+        </div>
+        <div class="game-name">${service.name}</div>
+        <div class="game-status">${service.status}</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
   function searchGames() {
     const input = document.getElementById('searchInput');
     const dropdown = document.getElementById('searchDropdown');
@@ -358,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const filtered = games.filter(game =>
+    const filtered = [...games, ...specialServices].filter(game =>
       game.name.toLowerCase().includes(inputValue) ||
       game.id.toLowerCase().includes(inputValue)
     );
