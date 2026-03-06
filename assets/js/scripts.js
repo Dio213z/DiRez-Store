@@ -23,6 +23,10 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'ewallet', name: 'Top Up E-Wallet', image: 'e-wallet.svg', status: '💳 Top Up Instan' }
   ];
 
+  const specialServices = [
+    { id: 'jasteb', name: 'MENU JASTEB BY DiRez Store', image: 'tml', status: '🛡️ Jasa Terpercaya' }
+  ];
+
   const prices = {
     ml: [
       { package: '👑 Weekly Diamond Pass', category: '👑 WEEKLY DIAMOND PASS', price: 28777 },
@@ -234,6 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
       { package: '90 Hari', category: '🎟️ PAKET AKSES', price: 90000 },
       { package: '180 Hari', category: '🎟️ PAKET AKSES', price: 165000 },
       { package: '365 Hari', category: '🎟️ PAKET AKSES', price: 300000 }
+    ],
+    jasteb: [
+      { package: 'JASTEB BASIC', category: '🛡️ MENU JASTEB', price: 5000 },
+      { package: 'JASTEB PRO', category: '🛡️ MENU JASTEB', price: 15000 },
+      { package: 'JASTEB VIP', category: '🛡️ MENU JASTEB', price: 25000 }
     ]
   };
 
@@ -248,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
       await window.dataSdk.init(dataHandler);
     }
     renderGames();
+    renderSpecialServices();
   }
 
   function scrollToTop() {
@@ -289,6 +299,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function handleGameClick(gameId, gameName) {
+    if (gameId === 'redfinger') {
+      window.open('https://direzstorebydiorezz.my.canva.site/redfinger', '_blank');
+    } else if (gameId === 'genshin') {
+      window.open('https://direzstorebydiorezz.my.canva.site/genshin-impact', '_blank');
+    } else if (gameId === 'telegram') {
+      window.open('https://direzstorebydiorezz.my.canva.site/telestars', '_blank');
+    } else if (gameId === 'roblox') {
+      window.open('https://direz-store-robloxrobux.my.canva.site', '_blank');
+    } else if (gameId === 'ewallet') {
+      window.open('https://direzstorebydiorezz.my.canva.site/e-wallet', '_blank');
+    } else {
+      showPrices(gameId, gameName);
+    }
+  }
+
   function renderGames() {
     const grid = document.getElementById('gamesGrid');
     if (!grid) return;
@@ -297,20 +323,8 @@ document.addEventListener('DOMContentLoaded', () => {
     games.forEach(game => {
       const card = document.createElement('div');
       card.className = 'game-card';
-
-      if (game.id === 'redfinger') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/redfinger', '_blank'));
-      } else if (game.id === 'genshin') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/genshin-impact', '_blank'));
-      } else if (game.id === 'telegram') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/telestars', '_blank'));
-      } else if (game.id === 'roblox') {
-        card.addEventListener('click', () => window.open('https://direz-store-robloxrobux.my.canva.site', '_blank'));
-      } else if (game.id === 'ewallet') {
-        card.addEventListener('click', () => window.open('https://direzstorebydiorezz.my.canva.site/e-wallet', '_blank'));
-      } else {
-        card.addEventListener('click', () => showPrices(game.id, game.name));
-      }
+      card.setAttribute('data-game-id', game.id);
+      card.setAttribute('data-game-name', game.name);
 
       card.innerHTML = `
         <div class="game-icon">
@@ -318,6 +332,28 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
         <div class="game-name">${game.name}</div>
         <div class="game-status">${game.status}</div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function renderSpecialServices() {
+    const grid = document.getElementById('specialServicesGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+
+    specialServices.forEach(service => {
+      const card = document.createElement('div');
+      card.className = 'game-card';
+      card.setAttribute('data-game-id', service.id);
+      card.setAttribute('data-game-name', service.name);
+
+      card.innerHTML = `
+        <div class="game-icon">
+          <img src="assets/Picture/${service.image}" alt="${service.name}" loading="lazy" onerror="this.src='assets/Picture/default-game.jpg'">
+        </div>
+        <div class="game-name">${service.name}</div>
+        <div class="game-status">${service.status}</div>
       `;
       grid.appendChild(card);
     });
@@ -333,7 +369,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    const filtered = games.filter(game =>
+    const filtered = [...games, ...specialServices].filter(game =>
       game.name.toLowerCase().includes(inputValue) ||
       game.id.toLowerCase().includes(inputValue)
     );
@@ -348,22 +384,15 @@ document.addEventListener('DOMContentLoaded', () => {
       const item = document.createElement('div');
       item.className = 'search-item';
       item.innerHTML = `<span class="search-item-icon"><img src="assets/Picture/${game.image}" alt="${game.name}" loading="lazy" onerror="this.src='assets/Picture/default-game.jpg'"></span>${game.name}`;
-      item.addEventListener('click', () => {
+
+      // Ensure dropdown item is clickable
+      item.addEventListener('mousedown', (e) => {
+        // Use mousedown to trigger before input blur if necessary,
+        // but here we just need to make sure the click works.
+        e.preventDefault(); // Prevent input blur from hiding dropdown too early
         document.getElementById('searchInput').value = '';
         dropdown.classList.remove('active');
-        if (game.id === 'redfinger') {
-          window.open('https://direzstorebydiorezz.my.canva.site/redfinger', '_blank');
-        } else if (game.id === 'genshin') {
-          window.open('https://direzstorebydiorezz.my.canva.site/genshin-impact', '_blank');
-        } else if (game.id === 'telegram') {
-          window.open('https://direzstorebydiorezz.my.canva.site/telestars', '_blank');
-        } else if (game.id === 'roblox') {
-          window.open('https://direz-store-robloxrobux.my.canva.site', '_blank');
-        } else if (game.id === 'ewallet') {
-          window.open('https://direzstorebydiorezz.my.canva.site/e-wallet', '_blank');
-        } else {
-          showPrices(game.id, game.name);
-        }
+        handleGameClick(game.id, game.name);
       });
       dropdown.appendChild(item);
     });
@@ -388,6 +417,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     priceTitle.textContent = `Pilih Paket ${gameName}`;
     priceGrid.innerHTML = '';
+
+    if (!prices[gameId]) {
+      priceGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #ffed4e; font-weight: 700;">⚠️ Maaf, paket untuk game ini belum tersedia.</div>';
+      const priceSection = document.getElementById('priceSection');
+      priceSection.classList.add('active');
+      setTimeout(() => smoothScrollTo('priceSection'), 500);
+      return;
+    }
 
     const grouped = {};
     prices[gameId].forEach((item) => {
@@ -868,22 +905,35 @@ WhatsApp Admin: https://wa.me/6285646335331
   const btnHistoryClose = document.getElementById('btn-history-close');
   if (btnHistoryClose) btnHistoryClose.addEventListener('click', closeHistory);
 
-  // Unified event delegation for package selection and auto-scroll
+  // Unified event delegation for game cards, package selection and auto-scroll
   document.addEventListener('click', (e) => {
+    // Game card click
+    const gameCard = e.target.closest('.game-card');
+    if (gameCard) {
+      const gameId = gameCard.getAttribute('data-game-id');
+      const gameName = gameCard.getAttribute('data-game-name');
+      if (gameId) {
+        handleGameClick(gameId, gameName);
+      }
+      return;
+    }
+
+    // Price item click
     const priceItem = e.target.closest('.price-item');
-    if (!priceItem) return;
+    if (priceItem) {
+      // Skip if it's out of stock
+      if (priceItem.style.opacity === '0.6' || priceItem.innerText.includes('HABIS')) return;
 
-    // Skip if it's out of stock
-    if (priceItem.style.opacity === '0.6' || priceItem.innerText.includes('HABIS')) return;
+      // Use stored item data for selection
+      if (priceItem._itemData) {
+        selectPrice(priceItem._itemData, priceItem);
 
-    // Use stored item data for selection
-    if (priceItem._itemData) {
-      selectPrice(priceItem._itemData, priceItem);
-
-      // Auto scroll with 400ms delay
-      setTimeout(() => {
-        smoothScrollTo('form-pesanan');
-      }, 400);
+        // Auto scroll with 400ms delay
+        setTimeout(() => {
+          smoothScrollTo('form-pesanan');
+        }, 400);
+      }
+      return;
     }
   });
 
