@@ -24,9 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
   ];
 
   const specialServices = [
-    { id: 'jasteb', name: 'MENU JASTEB BY DiRez Store', image: 'unchek.png', status: '📦 JASTEB BIASA/VVIP' },
-    { id: 'jb_kebutuhan', name: 'JB Kebutuhan Akun', image: 'unchek.png', status: '📦 Kebutuhan JB' },
-    { id: 'aplikasi_jb', name: 'Aplikasi Anak JB', image: 'unchek.png', status: '📱 Aplikasi JB' }
+    { id: 'jasteb', name: 'MENU JASTEB BY DiRez Store', image: 'unchek.png', status: '📦 JASTEB BIASA/VVIP' }
   ];
 
   const prices = {
@@ -264,16 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
       { package: '🚀 200 Ress', category: '⚡ JASTEB EXPRESS', price: 12000 },
       { package: '🚀 250 Ress', category: '⚡ JASTEB EXPRESS', price: 15000 },
       { package: '🚀 300 Ress', category: '⚡ JASTEB EXPRESS', price: 18000 }
-    ],
-    jb_kebutuhan: [
-      { package: '📦 Akun Standar', category: '📦 KEBUTUHAN AKUN', price: 50000 },
-      { package: '📦 Akun Premium', category: '📦 KEBUTUHAN AKUN', price: 100000 },
-      { package: '📦 Akun VVIP', category: '📦 KEBUTUHAN AKUN', price: 250000 }
-    ],
-    aplikasi_jb: [
-      { package: '📱 App JB Standar', category: '📱 APLIKASI ANAK JB', price: 25000 },
-      { package: '📱 App JB Pro', category: '📱 APLIKASI ANAK JB', price: 75000 },
-      { package: '📱 App JB Enterprise', category: '📱 APLIKASI ANAK JB', price: 150000 }
     ]
   };
 
