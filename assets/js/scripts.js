@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const ADMIN_PHONE = '6285646335331';
+
   let currentOrder = {
     game: '',
     gameName: '',
@@ -596,7 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function sendToWhatsApp() {
     const r = currentReceipt;
     if (!r) return;
-    const adminPhone = '6285805672952';
+    const adminPhone = ADMIN_PHONE;
     const dateStr = new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
     const msg = `╔═════════════════════════════════╗
@@ -702,7 +704,7 @@ Semoga bermanfaat dan barokah! ✨
 DiRez Store
 100% Amanah • Terpercaya • Berkah
 https://direzstorebydiorezz.my.canva.site
-WhatsApp Admin: https://wa.me/6285805672952
+WhatsApp Admin: https://wa.me/${ADMIN_PHONE}
 
 دعاء وصيام وقيام مقبول بإذن الله
 والسلام عليكم ورحمة الله وبركاته`;
@@ -713,7 +715,7 @@ WhatsApp Admin: https://wa.me/6285805672952
   }
 
   function contactAdmin() {
-    const adminPhone = '6285805672952';
+    const adminPhone = ADMIN_PHONE;
     window.open(`https://wa.me/${adminPhone}`, '_blank');
   }
 
