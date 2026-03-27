@@ -84,8 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
       { package: '💎 27.864', category: '🔥👑 DIAMOND SULTAN BESAR', price: 6655000 }
     ],
     ff: [
-      { package: '🚀 Member Mingguan', category: '👑 MEMBERSHIP TURBO', price: 27900 },
-      { package: '🚀 Member Bulanan', category: '👑 MEMBERSHIP TURBO', price: 80900 },
+      { package: '🚀 Member Mingguan', category: '👑 MEMBERSHIP TURBO', price: 29900 },
+      { package: '🚀 Member Bulanan', category: '👑 MEMBERSHIP TURBO', price: 87900 },
       { package: '💎 75 ⭐', category: '⭐ NOMINAL FAVORIT (PALING LARIS)', price: 10990 },
       { package: '💎 80', category: '⭐ NOMINAL FAVORIT (PALING LARIS)', price: 11990 },
       { package: '💎 130', category: '⭐ NOMINAL FAVORIT (PALING LARIS)', price: 18990 },
